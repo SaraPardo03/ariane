@@ -1,7 +1,16 @@
+import { ref, set, onValue } from "firebase/database";
+import { db } from '../configs/firebaseConfig'
 import { useParams } from "react-router-dom";
 import HomeMainNav from "../components/HomeMainNav.jsx";
 
 export function HomePage() {
+
+  console.log("bd", db);
+  const collectionOfStories = ref(db, 'stories');
+  onValue(collectionOfStories, (snapshot) => {
+    const data = snapshot.val();
+    console.log(data);
+  });
   return  <>
     <HomeMainNav />
     <div className="row g-0 body-container">
