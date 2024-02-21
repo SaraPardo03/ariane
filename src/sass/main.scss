@@ -1,15 +1,12 @@
-$mainNavHeight: 110px;
+$mainNavHeight: 120px;
 $cardPagePadding:10px;
 $cardPagePaddingFirstAndLast: 5px;
 $pagesListFollowingToShow: calc(20px + 2*$cardPagePadding);
 $pageListeHeight: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow));
 
-/*
-$mainNavHeight: 60px;
-$pagesListFollowingToShow: calc(20px);
-$pageListeHeight: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow));
-*/
-
+.story-footer-button-text{
+    font-size: 0.8rem;
+}
 
 .story-container{
     min-height: calc(100dvh - $mainNavHeight);
@@ -58,11 +55,6 @@ $pageListeHeight: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow)
     overflow-y: auto;
     scrollbar-width: thin
 }
-
-.story-map-container{
-    height: 200px;
-}
-
 
 //SCROLL SNAP VERTICAL AND HORIZONTAL
 .scrollbar-snap-y{

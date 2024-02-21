@@ -1,4 +1,3 @@
-import "./sass/main.scss";
 import { Link, RouterProvider, createBrowserRouter, NavLink, Outlet, useNavigation, defer } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { ErrorPage } from './pages/ErrorPage';
