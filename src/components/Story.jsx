@@ -20,7 +20,7 @@ export function PagesListHorizontal() {
 }
 
 export function PageCard(){
-	return <div className="col-11 page-container scrollbar-snap-section-x">
+	return <div className="col-11 mx-1 page-container scrollbar-snap-section-x">
 		<div className="card-page-container">
     	<div className="card card-page rounded-0 shadow-sm bg-white">
     		<PageCardNavBar/>
@@ -35,6 +35,7 @@ export function PageCard(){
     	</div>
     </div>
 	</div>
+
 }
 
 export function PageCardNavBar(){
@@ -44,7 +45,6 @@ return <div className="navbar bg-light p-2">
     <div className="page-body-container bg-dark bg-opacity-10">
     </div>
     <button type="button" className="btn btn-sm btn-light"><i className="bi bi-three-dots"></i></button>
-
   </div>
 </div>
 }

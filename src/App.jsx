@@ -3,7 +3,6 @@ import { Button } from 'react-bootstrap';
 import { ErrorPage } from './pages/ErrorPage';
 import { StoryPage } from './pages/StoryPage';
 import { HomePage } from './pages/HomePage';
-import MainNavBar from "./components/MainNavBar.jsx";
 import StoryMap from "./components/StoryMap.jsx";
 
 

@@ -3,10 +3,10 @@ import {useNavigation } from 'react-router-dom'
 function StoryFooterMainNav() {
 	const { state } = useNavigation();
 
-	return <nav className="navbar shadow-sm bg-light fixed-bottom">
+	return <nav className="navbar shadow-sm bg-light fixed-bottom p-1">
 	  <form className="container-fluid">
 	  	<button type="button" className="btn btn-light px-1 py-0 m-0 text-center border-0">
-	  			<i class="fs-3 bi bi-book-half"></i>
+	  			<i className="fs-3 bi bi-book-half"></i>
 	  			<div className="story-footer-button-text">Édition</div>
 	  	</button>
 	  	<button type="button" className="btn btn-light px-1 py-0 m-0 text-center border-0">
