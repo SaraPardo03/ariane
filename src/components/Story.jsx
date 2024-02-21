@@ -40,7 +40,7 @@ export function PageCard(){
 export function PageCardNavBar(){
 return <div className="navbar bg-light p-2">
   <div className="container-fluid">
-    Chapitre : scéne 
+    <span>Chapitre : scéne</span>
     <div className="page-body-container bg-dark bg-opacity-10">
     </div>
     <button type="button" className="btn btn-sm btn-light"><i className="bi bi-three-dots"></i></button>

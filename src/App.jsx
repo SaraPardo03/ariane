@@ -28,7 +28,7 @@ const router = createBrowserRouter([
         children:[
           {
             path: '',
-            element: <div> Ma liste  d'histoires </div>
+            element: <div> Ma liste de page </div>
           },
           { 
             path: ":id", 
