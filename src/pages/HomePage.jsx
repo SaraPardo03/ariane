@@ -1,4 +1,4 @@
-import { ref, set, onValue } from "firebase/database";
+import { ref, set, onValue, push, serverTimestamp} from "firebase/database";
 import { db } from '../configs/firebaseConfig'
 import { useEffect, useState} from "react"
 import { useParams } from "react-router-dom";
@@ -9,22 +9,27 @@ export function HomePage() {
   const [stories, setStories] = useState([]);
   const storiesRef = ref(db, 'stories/');
 
-  useEffect(() => {
-    onValue(storiesRef, (snapshot) => {
-      let data = [];
-      snapshot.forEach((childSnapshot)=>{
-        data.push({id: childSnapshot.key, ...childSnapshot.val()});
-      });
-      setStories(data);
-    }, {
-      onlyOnce: true
+  const addNewStoryToBDD = (story) => {
+    push(storiesRef, {...story,
+      createdAt:serverTimestamp(),
+      updatedAt:serverTimestamp(),
     });
-  }, []);
+  };
+
+  onValue(storiesRef, (snapshot) => {
+    let data = [];
+    snapshot.forEach((childSnapshot)=>{
+      data.push({id: childSnapshot.key, ...childSnapshot.val()});
+    });
+    setStories(data);
+  }, {
+    onlyOnce: true
+  });
 
   return<>
-    <HomeMainNav/>
+    <HomeMainNav stories={stories} addNewStoryToBDD={addNewStoryToBDD}/>
     <div className="row g-0 body-container">
-      <HomeListeStories stories={stories}/>
+      <HomeListeStories stories={stories} addNewStoryToBDD={addNewStoryToBDD}/>
     </div>
   </>;
 }

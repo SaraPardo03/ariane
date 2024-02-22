@@ -1,17 +1,15 @@
 function HomeListeStories(props) {
-	console.log("HomeListeStories", props.stories);
-
 	  return <div className="container">
     <div className="row">
       <div className="col-12">
         <div className="row p-2">
         	{
-        		props.stories.length === 0 ?(<StoryAddCard />
+        		props.stories.length === 0 ?(<StoryAddCard addNewStoryToBDD={props.addNewStoryToBDD}/>
         		):(
-        			props.stories.map((story)=> <StoryCard story={story}/>)
+        			props.stories.map((story)=> <StoryCard key={story.id} story={story}/>)
         		)
         	}
-        	<StoryAddCard />
+        	<StoryAddCard addNewStoryToBDD={props.addNewStoryToBDD}/>
         </div>
       </div>
     </div>
@@ -19,9 +17,8 @@ function HomeListeStories(props) {
 }
 
 function StoryCard(props) {
-	console.log("StoryCard", props);
   return	<div key={props.story.id} id={props.story.id} className="col-sm-4 my-2">
-  	<div className="card">
+  	<div className="card cursor-pointer">
 	    <div className="card-body">
 	      <h5><a href="../Story/2" className="text-decoration-none">{props.story.title}</a></h5>
 	      <span className="fw-lighter fs-6 fst-italic">Modifié le: {props.story.updatedAt}</span>
@@ -52,11 +49,23 @@ function StoryCardInfo(props){
   </li>
 }
 
-function StoryAddCard() {
-  return <div className="col-sm-4 my-2">
+function StoryAddCard(props) {
+	const handleClickNewStory = e => {
+		const storyToAdd = {
+			title: "Une nouvelle histoire qui commence...",
+			openNode: 0,
+			nbEnd: 0,
+			nbPages:0,
+			nbCharacters:0,
+		}
+		props.addNewStoryToBDD(storyToAdd);
+	}
+  return <div 
+  className="col-sm-4 my-2 cursor-pointer"
+  onClick={handleClickNewStory}>
   	<div className="card">
 	    <div className="card-body border-bottom">
-	      <h5><a href="../Story/2" className="text-decoration-none">Ajouter</a></h5>
+	      <h5>Ajouter</h5>
 	    </div>
 	    <div className="card-body">
 	      <p className="card-title">Créer une nouvelle hitoire</p>
