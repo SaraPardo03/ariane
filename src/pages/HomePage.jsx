@@ -16,16 +16,18 @@ export function HomePage() {
     });
   };
 
-  onValue(storiesRef, (snapshot) => {
-    let data = [];
-    snapshot.forEach((childSnapshot)=>{
-      data.push({id: childSnapshot.key, ...childSnapshot.val()});
+  useEffect(() => {
+    onValue(storiesRef, (snapshot) => {
+      let data = [];
+      snapshot.forEach((childSnapshot)=>{
+        data.push({id: childSnapshot.key, ...childSnapshot.val()});
+      });
+      setStories(data);
+    }, {
+      //onlyOnce: true
     });
-    setStories(data);
-  }, {
-    onlyOnce: true
-  });
-
+  }, []);
+  
   return<>
     <HomeMainNav stories={stories} addNewStoryToBDD={addNewStoryToBDD}/>
     <div className="row g-0 body-container">

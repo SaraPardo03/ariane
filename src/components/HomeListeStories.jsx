@@ -1,3 +1,5 @@
+import {useNavigation, useNavigate} from 'react-router-dom';
+
 function HomeListeStories(props) {
 	  return <div className="container">
     <div className="row">
@@ -17,19 +19,31 @@ function HomeListeStories(props) {
 }
 
 function StoryCard(props) {
-  return	<div key={props.story.id} id={props.story.id} className="col-sm-4 my-2">
+	const navigate = useNavigate();
+	const handleClickGoToStory = e => {
+		navigate(`/story/${props.story.id}`);
+	}
+
+	const updateDate = new Date(props.story.updatedAt);
+	const createDate = new Date(props.story.createdAt);
+
+  return	<div 
+  key={props.story.id} 
+  id={props.story.id} 
+  className="col-sm-4 my-2"
+  onClick={handleClickGoToStory}>
   	<div className="card cursor-pointer">
 	    <div className="card-body">
-	      <h5><a href="../Story/2" className="text-decoration-none">{props.story.title}</a></h5>
-	      <span className="fw-lighter fs-6 fst-italic">Modifié le: {props.story.updatedAt}</span>
+	      <h5>{props.story.title}</h5>
+	      <span className="fw-lighter fs-6 fst-italic">Modifié le: {`${createDate.getDate()}.${createDate.getMonth()+1}.${createDate.getFullYear()}`}</span>
 	      <br/>
-	      <span className="fw-lighter fs-6 fst-italic">Crée le: {props.story.createdAt}</span>
+	      <span className="fw-lighter fs-6 fst-italic">Crée le: {`${updateDate.getDate()}.${updateDate.getMonth()+1}.${updateDate.getFullYear()}`}</span>
 	    </div>
 	    <ul className="list-group list-group-flush p-2">
-		    <StoryCardInfo iconClass="bi-node-plus-fill" classColorIcon="text-primary" infoName="nœuds ouverts" info={props.story.openNode}/>
-		    <StoryCardInfo iconClass="bi-node-minus-fill" classColorIcon="text-secondary" infoName="nombre de fin" info={props.story.nbEnd}/>
+		    <StoryCardInfo iconClass="bi-node-plus-fill" classColorIcon="text-danger" infoName="nœuds ouverts" info={props.story.openNode}/>
+		    <StoryCardInfo iconClass="bi-node-minus-fill" classColorIcon="text-success" infoName="nombre de fin" info={props.story.nbEnd}/>
 		    <StoryCardInfo iconClass="bi-collection" classColorIcon="" infoName="nombre de pages" info={props.story.nbPages}/>
-		    <StoryCardInfo iconClass="bi-alphabet-uppercase" classColorIcon="" infoName="nombre de caractères" info={props.story.nbCharacters}/>
+		    <StoryCardInfo iconClass="bi-alphabet-uppercase" classColorIcon="text-secondary" infoName="nombre de caractères" info={props.story.nbCharacters}/>
 	    </ul>
 	  </div>
 	</div>
