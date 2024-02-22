@@ -21,12 +21,10 @@ export function HomePage() {
     });
   }, []);
 
-  console.log("stories.length", stories.length);
-
   return<>
-    <HomeMainNav />
+    <HomeMainNav/>
     <div className="row g-0 body-container">
-      <HomeListeStories />
+      <HomeListeStories stories={stories}/>
     </div>
   </>;
 }
