@@ -2,10 +2,10 @@ import { ref, set, onValue, push, serverTimestamp} from "firebase/database";
 import { db } from '../configs/firebaseConfig'
 import { useEffect, useState} from "react"
 import { useParams } from "react-router-dom";
-import HomeMainNav from "../components/HomeMainNav.jsx";
-import HomeListeStories from "../components/HomeListeStories.jsx";
+import StoriesMainNav from "../components/stories/StoriesMainNav.jsx";
+import Stories from "../components/stories/Stories.jsx";
 
-export function HomePage() {
+export function StoriesPage() {
   const [stories, setStories] = useState([]);
   const storiesRef = ref(db, 'stories/');
 
@@ -29,9 +29,9 @@ export function HomePage() {
   }, []);
   
   return<>
-    <HomeMainNav stories={stories} addNewStoryToBDD={addNewStoryToBDD}/>
+    <StoriesMainNav stories={stories} addNewStoryToBDD={addNewStoryToBDD}/>
     <div className="row g-0 body-container">
-      <HomeListeStories stories={stories} addNewStoryToBDD={addNewStoryToBDD}/>
+      <Stories stories={stories} addNewStoryToBDD={addNewStoryToBDD}/>
     </div>
   </>;
 }

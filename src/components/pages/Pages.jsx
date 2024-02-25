@@ -1,8 +1,8 @@
 import { ref, set, onValue, push, serverTimestamp} from "firebase/database";
-import { db } from '../configs/firebaseConfig'
 import { useState, useEffect, useRef, useMemo} from "react";
+import { db } from '../../configs/firebaseConfig';
 
-function Story(props) {
+function Pages(props) {
 	const [currentePageId, setCurrentePageId] = useState(null);
 	let currentPages = [];
 
@@ -19,7 +19,7 @@ function Story(props) {
 	</div>;
 }
 
-export default Story;
+export default Pages;
 
 
 export function PageCard(props){

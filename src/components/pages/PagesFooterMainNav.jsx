@@ -1,6 +1,6 @@
 import {useNavigation } from 'react-router-dom'
 
-function StoryFooterMainNav() {
+function PagesFooterMainNav() {
 	const { state } = useNavigation();
 
 	return <nav className="navbar shadow-sm bg-light fixed-bottom p-1">
@@ -29,4 +29,4 @@ function StoryFooterMainNav() {
 	</nav>;
 }
 
-export default StoryFooterMainNav;
+export default PagesFooterMainNav;

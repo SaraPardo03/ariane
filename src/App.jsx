@@ -1,9 +1,9 @@
 import { Link, RouterProvider, createBrowserRouter, NavLink, Outlet, useNavigation, defer } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { ErrorPage } from './pages/ErrorPage';
-import { StoryPage } from './pages/StoryPage';
+import { PagesPage } from './pages/PagesPage';
 import { EditPagePage } from './pages/EditPagePage';
-import { HomePage } from './pages/HomePage';
+import { StoriesPage } from './pages/StoriesPage';
 import StoryMap from "./components/StoryMap.jsx";
 
 
@@ -17,7 +17,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element:<HomePage />,
+        element:<StoriesPage />,
       },
       {
         path: "story",
@@ -31,7 +31,7 @@ const router = createBrowserRouter([
           },
           { 
             path: ":id", 
-            element: <><StoryPage /></>,
+            element: <><PagesPage /></>,
           },
         ]
       },

@@ -1,17 +1,14 @@
 import {useNavigation, useNavigate} from 'react-router-dom';
 
-function HomeListeStories(props) {
+function Stories(props) {
 	  return <div className="container">
     <div className="row">
       <div className="col-12">
         <div className="row p-2">
-        	{
-        		props.stories.length === 0 ?(<StoryAddCard addNewStoryToBDD={props.addNewStoryToBDD}/>
-        		):(
-        			props.stories.map((story)=> <StoryCard key={story.id} story={story}/>)
-        		)
-        	}
-        	<StoryAddCard addNewStoryToBDD={props.addNewStoryToBDD}/>
+        	{props.stories.length > 0 &&
+        		props.stories.map((story)=> <StoryCard key={story.id} story={story}/>)
+      		}
+      		<StoryAddCard addNewStoryToBDD={props.addNewStoryToBDD}/>
         </div>
       </div>
     </div>
@@ -21,7 +18,7 @@ function HomeListeStories(props) {
 function StoryCard(props) {
 	const navigate = useNavigate();
 	const handleClickGoToStory = e => {
-		navigate(`/story/${props.story.id}`);
+		navigate(`/story/` + props.story.id);
 	}
 
 	const updateDate = new Date(props.story.updatedAt);
@@ -40,8 +37,8 @@ function StoryCard(props) {
 	      <span className="fw-lighter fs-6 fst-italic">Crée le: {`${updateDate.getDate()}.${updateDate.getMonth()+1}.${updateDate.getFullYear()}`}</span>
 	    </div>
 	    <ul className="list-group list-group-flush p-2">
-		    <StoryCardInfo iconClass="bi-node-plus-fill" classColorIcon="text-danger" infoName="nœuds ouverts" info={props.story.openNode}/>
-		    <StoryCardInfo iconClass="bi-node-minus-fill" classColorIcon="text-success" infoName="nombre de fin" info={props.story.nbEnd}/>
+		    <StoryCardInfo iconClass="bi-node-plus-fill" classColorIcon="text-danger opacity-75" infoName="nœuds ouverts" info={props.story.openNode}/>
+		    <StoryCardInfo iconClass="bi-node-minus-fill" classColorIcon="text-success opacity-75" infoName="nombre de fin" info={props.story.nbEnd}/>
 		    <StoryCardInfo iconClass="bi-collection" classColorIcon="" infoName="nombre de pages" info={props.story.nbPages}/>
 		    <StoryCardInfo iconClass="bi-alphabet-uppercase" classColorIcon="text-secondary" infoName="nombre de caractères" info={props.story.nbCharacters}/>
 	    </ul>
@@ -88,4 +85,4 @@ function StoryAddCard(props) {
 	</div>
 }
 
-export default HomeListeStories;
+export default Stories;

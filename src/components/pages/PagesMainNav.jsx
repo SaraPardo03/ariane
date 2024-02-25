@@ -1,6 +1,6 @@
 import {useNavigation, useNavigate} from 'react-router-dom'
 
-function StoryMainNav() {
+function PagesMainNav() {
 	const { state } = useNavigation();
 	const navigate = useNavigate();
 	const handleClickGoToHome = e => {
@@ -21,4 +21,4 @@ function StoryMainNav() {
 	</nav>;
 }
 
-export default StoryMainNav;
+export default PagesMainNav;

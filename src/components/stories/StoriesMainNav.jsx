@@ -1,7 +1,8 @@
 import {useNavigation } from 'react-router-dom'
 
-function HomeMainNav(props) {
+function StoriesMainNav(props) {
 	const { state } = useNavigation();
+
 	const handleClickNewStory = e => {
 		const storyToAdd = {
 			title: "Une nouvelle histoire qui commence...",
@@ -26,4 +27,4 @@ function HomeMainNav(props) {
 
 }
 
-export default HomeMainNav;
+export default StoriesMainNav;
