@@ -1,50 +1,92 @@
-function Story() {
+import { ref, set, onValue, push, serverTimestamp} from "firebase/database";
+import { db } from '../configs/firebaseConfig'
+import { useState, useEffect, useRef, useMemo} from "react";
+
+function Story(props) {
+	const [currentePageId, setCurrentePageId] = useState(null);
+	let currentPages = [];
+
+	if(currentePageId !== null){
+		currentPages = props.pages.filter(page => page.id === currentePageId);
+	}else{
+		currentPages = props.pages.filter(page => page.first == true);
+	}
+
 	return <div className="col">
-		<div className="story-container scrollbar-snap-y">
-			<PagesListHorizontal/>
-			<PagesListHorizontal/>
-		</div>
+	{props.pages.length > 0 &&
+        <PageCard key={currentPages[0].id} addNewPageToBDD={props.addNewPageToBDD} page={currentPages[0]} setCurrentePageId={setCurrentePageId}/>
+   }
 	</div>;
 }
 
 export default Story;
 
-export function PagesListHorizontal() {
-	return <>
-		<div className="pages-list-horizontal-container bg-light d-flex flex-row flex-nowrap scrollbar-snap-section-y scrollbar-snap-x">
-			<PageCard/>
-			<PageCard/>
-			<PageCard/>
-		</div>
-	</>;
-}
 
-export function PageCard(){
-	return <div className="col-11 mx-1 page-container scrollbar-snap-section-x">
+export function PageCard(props){
+	const [choices, setChoices] = useState([]);
+  const choicesRef = ref(db, 'choices/' + props.page.id);
+
+  const addNewChoiceToBDD = (choice) => {
+  	let newPage = {
+  		previousPageId: props.page.id
+  	}
+  	let newPageId = props.addNewPageToBDD(newPage);
+    push(choicesRef, {...choice,
+    	pageId:props.page.id,
+    	sendToPageId:newPageId,
+    	title:"mon super choix", 
+    });
+  };
+
+  useEffect(() => {
+    onValue(choicesRef, (snapshot) => {
+      let data = [];
+      snapshot.forEach((childSnapshot)=>{
+        data.push({id: childSnapshot.key, ...childSnapshot.val()});
+      });
+      setChoices(data);
+    }, {
+      //onlyOnce: true
+    });
+  }, []);
+
+
+	return <div className="col-12 mx-1 page-container">
 		<div className="card-page-container">
     	<div className="card card-page rounded-0 shadow-sm bg-white">
-    		<PageCardNavBar/>
+    		<PageCardNavBar page={props.page} setCurrentePageId={props.setCurrentePageId}/>
     		<div className="page-body-container bg-dark bg-opacity-10">
 	        <div className="card bg-light m-2">
 	          <PageTags/>
-	          <PageText/>
-	          <PageListChoices/>
+	          <PageText page={props.page}/>
+	          {choices.length > 0 &&
+	          	choices.map((choice)=> <PageListChoices key={choice.id} choice={choice} setCurrentePageId={props.setCurrentePageId}/>)
+					  }
 	        </div>
 	      </div>
-	      <PageCardNavBarFooter/>
+	      <PageCardNavBarFooter page={props.page} addNewChoiceToBDD={addNewChoiceToBDD}/>
     	</div>
     </div>
 	</div>
 
 }
 
-export function PageCardNavBar(){
+export function PageCardNavBar(props){
+	const handleClickGoToPreviousPage = e => {
+		console.log("handleClickGoToPreviousPage", props.page.previousPageId);
+		props.setCurrentePageId(props.page.previousPageId);
+	}
+
 	return <div className="navbar bg-light p-2">
 	  <div className="container-fluid">
 	    <span>Chapitre : scéne</span>
 	    <div className="page-body-container bg-dark bg-opacity-10">
 	    </div>
-	    <button type="button" className="btn btn-sm btn-light"><i className="bi bi-three-dots"></i></button>
+	    <button 
+	    	disabled={props.page.first === true ? true : false}
+	    	type="button" 
+	    	onClick={handleClickGoToPreviousPage}
+	    	className="btn btn-sm btn-light"><i className="bi bi-caret-up-fill"></i></button>
 	  </div>
 	</div>
 }
@@ -57,28 +99,35 @@ export function PageTags(){
 	</div>
 }
 
-export function PageText(){
+export function PageText(props){
 	return <div className="card-body">
-		<h5 className="card-title">Titre de la page</h5>
-		<p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-		<p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+		<h5 className="card-title">{props.page.title}</h5>
+		<p className="card-text">{props.page.text}</p>
 	</div>
 }
 
-export function PageListChoices(){
+export function PageListChoices(props){
 	return <div className="card bg-light rounded-0 border-0">
 	  <ul className="list-group list-group-flush">
-	  	<PageChoice/>
-	  	<PageChoice/>
+	  	<PageChoice choice={props.choice} setCurrentePageId={props.setCurrentePageId}/>
 	  </ul>
 	</div>
 }
 
-export function PageChoice(){
+export function PageChoice(props){
+	const handleClickGoToNexPage = ()=>{
+		props.setCurrentePageId(props.choice.sendToPageId);
+	}
+
 	return <>
 		<li className="list-group-item d-flex justify-content-between align-items-center bg-light rounded-0 border-1">
-      Choix un
-      <button type="button" className="btn btn-sm btn-light"><i className="bi bi-three-dots-vertical"></i></button>
+      {props.choice.title}
+      <button 
+      	type="button"
+      	onClick={handleClickGoToNexPage} 
+      	className="btn btn-sm btn-light">
+      	<i className="bi bi-caret-right-fill"></i>
+      </button>
     </li>
     <PageChoiceTagsToHave/>
     <PageChoiceTagsNotToHave/>
@@ -102,9 +151,19 @@ export function PageChoiceTagsNotToHave(){
 }
 
 
-export function PageCardNavBarFooter(){
+export function PageCardNavBarFooter(props){
+	const handleClickAddChoice = ()=>{
+		const choice = {
+			pageId: props.page.id,
+			sendToPageId:0,
+		}
+		props.addNewChoiceToBDD(choice);
+	}
 	return <div className="navbar justify-content-end p-2">
-		<button type="button" className="btn btn-primary btn-sm"><i className="bi bi-plus">Ajouter un choix</i></button>
+		<button 
+			type="button" 
+			onClick={handleClickAddChoice} 
+			className="btn btn-primary btn-sm"><i className="bi bi-plus">Ajouter un choix</i></button>
 	</div>
 }
 
