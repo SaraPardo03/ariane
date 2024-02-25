@@ -2,8 +2,10 @@ import { ref, set, onValue, push, serverTimestamp} from "firebase/database";
 import { db } from '../configs/firebaseConfig'
 import { useEffect, useState} from "react"
 import { useParams } from "react-router-dom";
-import StoriesMainNav from "../components/stories/StoriesMainNav.jsx";
 import Stories from "../components/stories/Stories.jsx";
+import StoriesMainNav from "../components/stories/StoriesMainNav.jsx";
+import StoriesFooterMainNav from "../components/stories/StoriesFooterMainNav.jsx";
+
 
 export function StoriesPage() {
   const [stories, setStories] = useState([]);
@@ -33,5 +35,6 @@ export function StoriesPage() {
     <div className="row g-0 body-container">
       <Stories stories={stories} addNewStoryToBDD={addNewStoryToBDD}/>
     </div>
+    <StoriesFooterMainNav stories={stories} addNewStoryToBDD={addNewStoryToBDD}/>
   </>;
 }

@@ -6,9 +6,9 @@ function Stories(props) {
       <div className="col-12">
         <div className="row p-2">
         	{props.stories.length > 0 &&
-        		props.stories.map((story)=> <StoryCard key={story.id} story={story}/>)
+        		props.stories.map((story)=> <StoryCard key={story.id} story={story} nbStories={props.stories.length}/>)
       		}
-      		<StoryAddCard addNewStoryToBDD={props.addNewStoryToBDD}/>
+      		<StoryAddCard addNewStoryToBDD={props.addNewStoryToBDD} nbStories={props.stories.length}/>
         </div>
       </div>
     </div>
@@ -16,6 +16,7 @@ function Stories(props) {
 }
 
 function StoryCard(props) {
+	console.log(props.nbStories);
 	const navigate = useNavigate();
 	const handleClickGoToStory = e => {
 		navigate(`/story/` + props.story.id);
@@ -27,7 +28,7 @@ function StoryCard(props) {
   return	<div 
   key={props.story.id} 
   id={props.story.id} 
-  className="col-sm-4 my-2"
+  className={props.nbStories < 3 ? "my-2 col-md-6" : "my-2 col-md-6 col-lg-4"}
   onClick={handleClickGoToStory}>
   	<div className="card cursor-pointer">
 	    <div className="card-body">
@@ -72,7 +73,7 @@ function StoryAddCard(props) {
 		props.addNewStoryToBDD(storyToAdd);
 	}
   return <div 
-  className="col-sm-4 my-2 cursor-pointer"
+  className={props.nbStories < 3 ? "my-2 col-md-6 cursor-pointer" : "my-2 col-md-6 col-lg-4 cursor-pointer"}
   onClick={handleClickNewStory}>
   	<div className="card">
 	    <div className="card-body border-bottom">
@@ -84,5 +85,4 @@ function StoryAddCard(props) {
 	  </div>
 	</div>
 }
-
 export default Stories;

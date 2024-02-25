@@ -18,9 +18,10 @@ function StoriesMainNav(props) {
 	  	<div>Mon supper nom d'application</div>
 	  	<button 
 	  		type="button" 
-	  		className="btn btn-light"
+	  		className="d-none d-md-block btn btn-primary"
 	  		onClick={handleClickNewStory}>
 	  		<i className="bi bi-plus"></i>
+	  		<span> Nouvelle histoire </span>
 	  	</button>
 	  </form>
 	</nav>;
