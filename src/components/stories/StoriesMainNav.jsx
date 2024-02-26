@@ -5,7 +5,7 @@ function StoriesMainNav(props) {
 
 	const handleClickNewStory = e => {
 		const storyToAdd = {
-			title: "Une nouvelle histoire qui commence...",
+			title: "Titre",
 			openNode: 0,
 			nbEnd: 0,
 			nbPages:0,
