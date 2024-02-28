@@ -1,5 +1,6 @@
 import {useNavigation, useNavigate} from 'react-router-dom';
 import { useState} from "react";
+import StoryEditModal from "./StoryEditModal.jsx";
 
 function Stories(props) {
 	  return <div className="container">
@@ -7,7 +8,7 @@ function Stories(props) {
       <div className="col-12">
         <div className="row p-2">
         	{props.stories.length > 0 &&
-        		props.stories.map((story)=> <StoryCard key={story.id} story={story}  deleteStoryToBDD={props.deleteStoryToBDD} handleOpenModal={props.handleOpenModal}  nbStories={props.stories.length}/>)
+        		props.stories.map((story)=> <StoryCard key={story.id} story={story}  updateStoryToBDD={props.updateStoryToBDD}  deleteStoryToBDD={props.deleteStoryToBDD} handleOpenModal={props.handleOpenModal}  nbStories={props.stories.length}/>)
       		}
       		<StoryAddCard addNewStoryToBDD={props.addNewStoryToBDD}  nbStories={props.stories.length}/>
         </div>
@@ -38,8 +39,8 @@ function StoryCard(props) {
   return	<div 
   key={props.story.id} 
   id={props.story.id} 
-  className={props.nbStories < 3 ? "my-2 col-md-6" : "my-2 col-md-6 col-lg-4"}>
-  	<div className="card">
+  className={props.nbStories < 3 ? "my-2 col-md-6 story-card-container" : "my-2 col-md-6 col-lg-4 story-card-container"}>
+  	<div className="card story-card shadow-sm">
 	    <div className="card-body">
 	    	<div className="mb-2">
 	    		<button
@@ -64,13 +65,7 @@ function StoryCard(props) {
 		    <StoryCardInfo iconClass="bi-alphabet-uppercase" classColorIcon="text-secondary" infoName="nombre de caractères" info={props.story.nbCharacters}/>
 	    </ul>
 	    <div className="navbar justify-content-end p-2">
-		    <button 
-		  		type="button" 
-		  		onClick={handleClickStoryEditModalOpen}
-		  		className="btn btn-sm btn-secondary me-2">
-		  		<i className="bi bi-gear me-2"></i>
-		  		<span>Editer</span>
-		  	</button>
+	    	<StoryEditModal story={props.story} updateStoryToBDD={props.updateStoryToBDD}/>
 		  	<button 
 		  		type="button" 
 		  		onClick={handleClickGoToStory}

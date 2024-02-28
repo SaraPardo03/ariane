@@ -3,7 +3,6 @@ import { db } from '../configs/firebaseConfig'
 import { useRef, useEffect, useState} from "react"
 import { useParams } from "react-router-dom";
 import Stories from "../components/stories/Stories.jsx";
-import StoryEditModal from "../components/stories/StoryEditModal.jsx";
 import StoriesMainNav from "../components/stories/StoriesMainNav.jsx";
 import StoriesFooterMainNav from "../components/stories/StoriesFooterMainNav.jsx";
 
@@ -62,8 +61,7 @@ export function StoriesPage() {
   return<>
     <StoriesMainNav stories={stories} addNewStoryToBDD={addNewStoryToBDD}/>
     <div className="row g-0 body-container bg-secondary bg-opacity-10">
-      <StoryEditModal isOpen={open} story={selectedStory} updateStoryToBDD={updateStoryToBDD} handleCloseModal={handleCloseModal}/>
-      <Stories stories={stories} addNewStoryToBDD={addNewStoryToBDD} deleteStoryToBDD={deleteStoryToBDD} handleOpenModal={handleOpenModal} />
+      <Stories stories={stories} updateStoryToBDD={updateStoryToBDD} addNewStoryToBDD={addNewStoryToBDD} deleteStoryToBDD={deleteStoryToBDD} handleOpenModal={handleOpenModal} />
     </div>
     <StoriesFooterMainNav stories={stories} addNewStoryToBDD={addNewStoryToBDD}/>
   </>;
