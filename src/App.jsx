@@ -2,7 +2,6 @@ import { Link, RouterProvider, createBrowserRouter, NavLink, Outlet, useNavigati
 import { Button } from 'react-bootstrap';
 import { ErrorPage } from './pages/ErrorPage';
 import { PagesPage } from './pages/PagesPage';
-import { EditPagePage } from './pages/EditPagePage';
 import { StoriesPage } from './pages/StoriesPage';
 import StoryMap from "./components/StoryMap.jsx";
 
@@ -35,18 +34,6 @@ const router = createBrowserRouter([
           },
         ]
       },
-      {
-        path:"edit",
-        element:<>
-          <Outlet />
-        </>,
-        children:[
-          { 
-            path: ":id", 
-            element: <EditPagePage />,
-          },
-        ]
-      }
     ]
   }
 ])

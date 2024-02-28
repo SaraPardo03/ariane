@@ -3,18 +3,17 @@ import { useState, useEffect, useRef, useMemo} from "react";
 import { db } from '../../configs/firebaseConfig';
 
 function Pages(props) {
-	const [currentePageId, setCurrentePageId] = useState(null);
 	let currentPages = [];
 
-	if(currentePageId !== null){
-		currentPages = props.pages.filter(page => page.id === currentePageId);
+	if(props.currentePageId !== null){
+		currentPages = props.pages.filter(page => page.id === props.currentePageId);
 	}else{
 		currentPages = props.pages.filter(page => page.first == true);
 	}
 
-	return <div className="col">
+	return <div className="col m-2">
 	{props.pages.length > 0 &&
-        <PageCard key={currentPages[0].id} addNewPageToBDD={props.addNewPageToBDD} page={currentPages[0]} setCurrentePageId={setCurrentePageId}/>
+  	<PageCard key={currentPages[0].id} addNewPageToBDD={props.addNewPageToBDD} page={currentPages[0]} setCurrentePageId={props.setCurrentePageId}/>
    }
 	</div>;
 }
@@ -28,6 +27,7 @@ export function PageCard(props){
 
   const addNewChoiceToBDD = (choice) => {
   	let newPage = {
+  		first:false,
   		previousPageId: props.page.id
   	}
   	let newPageId = props.addNewPageToBDD(newPage);
@@ -51,7 +51,7 @@ export function PageCard(props){
   }, []);
 
 
-	return <div className="col-12 mx-1 page-container">
+	return <div className="col-12 page-container">
 		<div className="card-page-container">
     	<div className="card card-page rounded-0 shadow-sm bg-white">
     		<PageCardNavBar page={props.page} setCurrentePageId={props.setCurrentePageId}/>
@@ -73,7 +73,6 @@ export function PageCard(props){
 
 export function PageCardNavBar(props){
 	const handleClickGoToPreviousPage = e => {
-		console.log("handleClickGoToPreviousPage", props.page.previousPageId);
 		props.setCurrentePageId(props.page.previousPageId);
 	}
 

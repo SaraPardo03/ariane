@@ -10,6 +10,7 @@ import StoryMap from "../components/StoryMap.jsx";
 
 export function PagesPage() {
   const [pages, setPages] = useState([]);
+  const [currentePageId, setCurrentePageId] = useState(null);
   const params = useParams();
   //get all the pages of the story
   const pagesRef =ref(db, 'pages/' + params.id);
@@ -25,27 +26,27 @@ export function PagesPage() {
     });
   }, []);
 
-  const addNewPageToBDD = (page) => {
+  const addNewPageToBDD = (page, first) => {
     let newPageId = push(pagesRef, {...page,
-      first:false,
       end:false,
       title:"Mon titre de page",
       text:"mon text de page",
       title:"mon super choix", 
     }).key;
 
-    console.log(newPageId);
     return newPageId;
   };
   
   return<>
-    <PagesMainNav /> 
+    <PagesMainNav addNewPageToBDD={addNewPageToBDD} /> 
     <div className="row g-0 body-container">
       <Pages
         pages={pages}
+        currentePageId={currentePageId}
+        setCurrentePageId={setCurrentePageId}
         addNewPageToBDD={addNewPageToBDD}
       />
-      <StoryMap/>
+      <StoryMap pages={pages} setCurrentePageId={setCurrentePageId}/>
     </div>
     <PagesFooterMainNav/>  
   </>;

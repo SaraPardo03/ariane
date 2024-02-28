@@ -43,7 +43,6 @@ export function StoriesPage() {
     const newDate = serverTimestamp();
     story.updatedAt = newDate;
     story.createdAt = newDate;
-    console.log(newDate, story);
     const newStoryId = push(storiesRef, {...story}).key;
     story.id = newStoryId;
     handleOpenModal(story);

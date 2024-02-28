@@ -4,10 +4,34 @@ $cardPagePaddingFirstAndLast: 5px;
 $pagesListFollowingToShow: calc(20px + 2*$cardPagePadding);
 $pageListeHeight: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow));
 
-.story-footer-button-text{
-    font-size: 0.8rem;
+/* if a modal is open we disable the scroll*/
+body.modal-open {
+    overflow: hidden;
 }
 
+/* ##############################################################
+                    STORIES PAGE COMPOMENTS 
+##################################################################*/
+// STORY EDIT MODAL
+.story-editModal{
+   min-height: 100%; 
+   max-height: 100%;
+   overflow: auto;
+   scrollbar-width: thin;
+}
+
+.story-summary {
+    height: calc(100dvh - 300px);
+  }
+
+.story-footer-button-text{
+    font-size: 0.8rem; 
+}
+
+
+/* ##############################################################
+                    PAGES PAGE COMPOMENTS 
+##################################################################*/
 .story-container{
     min-height: calc(100dvh - $mainNavHeight);
     max-height: calc(100dvh - $mainNavHeight);
@@ -75,14 +99,23 @@ $pageListeHeight: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow)
     scroll-snap-stop:always;
 }
 
+/* ##############################################################
+                    STORY COMPONENT
+##################################################################*/
 .story-map {
-    min-height: 100dvh;
-    max-height: 100dvh;
+    min-height: calc(100dvh - calc($mainNavHeight + 20px ));
+    width: 100%;
+    overflow: auto;
 }
 
-.story-map-img {
-    min-height: 100dvh;
-    max-height: 100dvh;
+.buttons-container {
+  position: absolute;
+  bottom: 80px;
+  right: 80px;
+}
+
+.buttons-container button {
+  margin-left: 5px; /* Ajouter une marge entre les boutons */
 }
 
 // MEDIA QUERY FOR PAGES 
