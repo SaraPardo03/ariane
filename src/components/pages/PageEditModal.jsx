@@ -9,8 +9,7 @@ function PageEditModal({page, choices, updatePageToBDD}) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  return (
-    <>
+  return <>
       <button 
       type="button" 
       onClick={handleShow} 
@@ -36,7 +35,6 @@ function PageEditModal({page, choices, updatePageToBDD}) {
           handleClose={handleClose}/>
       </Modal>
     </>
-  );
 }
 
 function EditPageForm({page, choices, updatePageToBDD, handleClose}){
@@ -71,6 +69,7 @@ function EditPageForm({page, choices, updatePageToBDD, handleClose}){
     <Modal.Body className={"page-edit-modal-body bg-secondary bg-opacity-10"}>
       <Form className="page-edit-modal">
         <Form.Group className="mb-3">
+          <Form.Label>Titre</Form.Label>
           <Form.Control
             type="text"
             placeholder="Titre"
@@ -80,6 +79,7 @@ function EditPageForm({page, choices, updatePageToBDD, handleClose}){
           />
         </Form.Group>
         <Form.Group className="mb-3 page-edit-modal"> 
+          <Form.Label>Texte</Form.Label>
           <Form.Control
           className="page-edit-modal-form"
           onChange={handleChange} 

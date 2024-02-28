@@ -1,38 +1,43 @@
-import Modal from 'react-modal';
-import { useState} from "react";
+import { useState, useRef} from "react";
+import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
 
-Modal.setAppElement('#root');
+function StoryEditModal({story, updateStoryToBDD}) {
+  const [show, setShow] = useState(false); 
 
-function StoryEditModal(props) {
-	const customStyles = {
-	  content: {
-	  	inset:"20px",
-	  	padding:"0px",
-	  	border:"none",
-	  	marginTop:"40px",
-	  },
-	};
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
-	return	<Modal
-	style={customStyles}
-	isOpen={props.isOpen}>
-		<div className="story-editModal bg-secondary bg-opacity-10 border border-secondar rounded-3 p-3">
-			<div className="navbar justify-content-end p-2">
-				<button 
-					type="button" 
-					onClick={props.handleCloseModal} 
-					className="btn btn-secondary btn-sm rounded-circle"><i className="bi bi-x-lg"></i>
-				</button>
-			</div>
-			<div className="story-editModal">
-				{props.story && <EditStoryForm updateStoryToBDD={props.updateStoryToBDD} story={props.story}/>}
-			</div>
-		</div>
-	</Modal>
+  return	<>
+		<button
+  		type="button" 
+  		onClick={handleShow}
+  		className="btn btn-sm btn-secondary me-2">
+  		<i className="bi bi-gear me-2"></i>
+  		<span>Editer</span>
+  	</button>
+    <Modal
+    contentClassName="page-edit-modal"
+    size="lg" 
+    fullscreen="lg-down"
+    show={show} 
+    scrollable
+    onHide={handleClose}
+    backdrop="static">
+      <Modal.Header className={"bg-secondary bg-opacity-10 border-0"} closeButton>
+      </Modal.Header>
+        <EditPageForm 
+        story={story} 
+        updateStoryToBDD={updateStoryToBDD} 
+        handleClose={handleClose}/>
+    </Modal>
+  </>
 }
 
-function EditStoryForm({story, updateStoryToBDD}){
-	const [formStory, setFormStory] = useState(story);
+function EditPageForm({story, updateStoryToBDD, handleClose}){
+  const [formStory, setFormStory] = useState(story);
+  const textareaRef = useRef(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -43,31 +48,47 @@ function EditStoryForm({story, updateStoryToBDD}){
   };
 
   const handleSubmit = (e)=>{
-  	updateStoryToBDD(formStory);
+    updateStoryToBDD(formStory);
+    handleClose();
   };
 
-  return <form onSubmit={handleSubmit} className="story-form">
-	  <div className="mb-3">
-	    <input type="text" name="title" className="form-control" placeholder="Titre de l'histoire" value={formStory.title} onChange={handleChange} required/>
-	  </div>
-	  <div className="mb-3">
-		    <textarea className="form-control story-summary" name="summary" placeholder="Résumé" value={formStory.summary} onChange={handleChange}></textarea>
-	  </div>
-	  <div className="navbar p-2">
-			<button 
-	  		type="cancel" 
-	  		className="btn btn-sm btn-danger">
-	  		<span>Annuler</span>
-	  	</button>
-	  	<button 
-	  		type="submit" 
-	  		className="btn btn-sm btn-primary">
-	  		<span>Enregistrer</span>
-	  	</button>
-		</div>
-	</form>
-
-
+  return <>
+    <Modal.Body className={"page-edit-modal-body bg-secondary bg-opacity-10"}>
+      <Form className="page-edit-modal">
+        <Form.Group className="mb-3">
+          <Form.Label>Titre</Form.Label>
+          <Form.Control
+            type="text"
+            placeholder="Titre"
+            value={formStory.title}
+            name="title"
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3 page-edit-modal"> 
+          <Form.Label>Résumer</Form.Label>
+          <Form.Control
+          className="page-edit-modal-form"
+          onChange={handleChange} 
+          value={formStory.summary}
+          name="summary"
+          ref={textareaRef}
+          as="textarea"/>
+        </Form.Group>
+      </Form>
+    </Modal.Body>
+    <Modal.Footer className={"bg-secondary bg-opacity-10"} >
+      <Button className={"btn btn-sm"} variant="danger" onClick={handleClose}>
+        Annuler
+      </Button>
+       <Button 
+        onClick={handleSubmit}
+        className={"btn btn-sm"} 
+        variant="primary">
+          Sauvegarder
+        </Button>
+    </Modal.Footer>
+  </>
 }
 
 export default StoryEditModal;
