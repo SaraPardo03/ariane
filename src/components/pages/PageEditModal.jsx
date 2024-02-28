@@ -9,15 +9,10 @@ function PageEditModal({page, choices, updatePageToBDD}) {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-
-
-
-
   return (
     <>
       <button 
       type="button" 
-      scrollable
       onClick={handleShow} 
       className="btn btn-secondary btn-sm">
         <i className="bi bi-pencil">Editer</i>
@@ -47,26 +42,6 @@ function PageEditModal({page, choices, updatePageToBDD}) {
 function EditPageForm({page, choices, updatePageToBDD, handleClose}){
   const [formPage, setFormPage] = useState(page);
   const textareaRef = useRef(null);
-
-  /*
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.focus();
-      textareaRef.current.selectionStart = textareaRef.current.value.length;
-      textareaRef.current.selectionEnd = textareaRef.current.value.length;
-    }
-  }, []);
-
-  useEffect(() => {
-    handleTextareaHeight();
-  }, [formPage.text]);
-
-  const handleTextareaHeight = () => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-  };*/
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -127,8 +102,8 @@ function EditPageForm({page, choices, updatePageToBDD, handleClose}){
       </Form>
     </Modal.Body>
     <Modal.Footer className={"bg-secondary bg-opacity-10"} >
-      <Button className={"btn btn-sm"} variant="secondary" onClick={handleClose}>
-        Close
+      <Button className={"btn btn-sm"} variant="danger" onClick={handleClose}>
+        Annuler
       </Button>
        <Button 
         onClick={handleSubmit}

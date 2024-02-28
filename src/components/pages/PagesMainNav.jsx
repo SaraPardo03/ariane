@@ -19,7 +19,7 @@ function PagesMainNav(props) {
 	  	<div>Mon titre d'hitoire</div>
 	  	<button 
 	  		type="button" 
-	  		className="d-none d-md-block btn btn-sm btn-light rounded-circle">
+	  		className="btn btn-sm btn-light rounded-circle">
 	  		<i className="bi bi-three-dots"></i>
 	  	</button>
 	  </form>

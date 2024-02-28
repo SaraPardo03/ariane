@@ -32,7 +32,6 @@ function StoryEditModal(props) {
 }
 
 function EditStoryForm({story, updateStoryToBDD}){
-	console.log("render", story);
 	const [formStory, setFormStory] = useState(story);
 
   const handleChange = (e) => {
@@ -52,7 +51,7 @@ function EditStoryForm({story, updateStoryToBDD}){
 	    <input type="text" name="title" className="form-control" placeholder="Titre de l'histoire" value={formStory.title} onChange={handleChange} required/>
 	  </div>
 	  <div className="mb-3">
-		    <textarea className="form-control story-summary" name="summary" placeholder="Résumé de l'histoire" placeholder="Résumé" value={formStory.summary} onChange={handleChange}></textarea>
+		    <textarea className="form-control story-summary" name="summary" placeholder="Résumé" value={formStory.summary} onChange={handleChange}></textarea>
 	  </div>
 	  <div className="navbar p-2">
 			<button 

@@ -63,20 +63,20 @@ function StoryCard(props) {
 		    <StoryCardInfo iconClass="bi-collection" classColorIcon="" infoName="nombre de pages" info={props.story.nbPages}/>
 		    <StoryCardInfo iconClass="bi-alphabet-uppercase" classColorIcon="text-secondary" infoName="nombre de caractères" info={props.story.nbCharacters}/>
 	    </ul>
-	    <div className="navbar p-2">
+	    <div className="navbar justify-content-end p-2">
 		    <button 
 		  		type="button" 
 		  		onClick={handleClickStoryEditModalOpen}
-		  		className="btn btn-sm btn-secondary">
+		  		className="btn btn-sm btn-secondary me-2">
 		  		<i className="bi bi-gear me-2"></i>
-		  		<span>Configurer</span>
+		  		<span>Editer</span>
 		  	</button>
 		  	<button 
 		  		type="button" 
 		  		onClick={handleClickGoToStory}
 		  		className="btn btn-sm btn-primary">
 		  		<i className="bi bi-pencil me-2"></i>
-		  		<span>Editer</span>
+		  		<span>Rédaction</span>
 		  	</button>
 			</div>
 	  </div>

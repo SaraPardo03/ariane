@@ -1,3 +1,5 @@
+@import 'node_modules/bootstrap/scss/bootstrap';
+
 $mainNavHeight: 110px;
 $cardPagePadding:0px;
 $cardPagePaddingFirstAndLast: 5px;
@@ -7,6 +9,12 @@ $pageListeHeight: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow)
 /* if a modal is open we disable the scroll*/
 body.modal-open {
     overflow: hidden;
+}
+
+#pages-footer-main-nav a.active {
+  color: $primary;
+  border: 2px solid red;
+  background-color: rgba(0, 0, 0, 0);
 }
 
 /* ##############################################################
