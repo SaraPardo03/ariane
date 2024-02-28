@@ -1,19 +1,20 @@
 import { ref, set, onValue, push, serverTimestamp} from "firebase/database";
 import { useState, useEffect, useRef, useMemo} from "react";
 import { db } from '../../configs/firebaseConfig';
+import PageEditModal from './PageEditModal';
 
-function Pages(props) {
+function Pages({storyId, pages, currentePageId, setCurrentePageId, addNewPageToBDD}) {
 	let currentPages = [];
 
-	if(props.currentePageId !== null){
-		currentPages = props.pages.filter(page => page.id === props.currentePageId);
+	if(currentePageId !== null){
+		currentPages = pages.filter(page => page.id === currentePageId);
 	}else{
-		currentPages = props.pages.filter(page => page.first == true);
+		currentPages = pages.filter(page => page.first == true);
 	}
 
 	return <div className="col m-2">
-	{props.pages.length > 0 &&
-  	<PageCard key={currentPages[0].id} addNewPageToBDD={props.addNewPageToBDD} page={currentPages[0]} setCurrentePageId={props.setCurrentePageId}/>
+	{pages.length > 0 &&
+  	<PageCard storyId={storyId} key={currentPages[0].id} addNewPageToBDD={addNewPageToBDD} page={currentPages[0]} setCurrentePageId={setCurrentePageId}/>
    }
 	</div>;
 }
@@ -21,22 +22,30 @@ function Pages(props) {
 export default Pages;
 
 
-export function PageCard(props){
+export function PageCard({storyId, page, addNewPageToBDD, setCurrentePageId}){
 	const [choices, setChoices] = useState([]);
-  const choicesRef = ref(db, 'choices/' + props.page.id);
+	const pageRef = ref(db, `pages/${storyId}/${page.id}`);
+  const choicesRef = ref(db, 'choices/' + page.id);
+
+
+  const updatePageToBDD = (page) => {
+    const pageId = page.id;
+		set(pageRef, {...page, id:null});
+  };
 
   const addNewChoiceToBDD = (choice) => {
   	let newPage = {
   		first:false,
-  		previousPageId: props.page.id
+  		previousPageId: page.id
   	}
   	let newPageId = props.addNewPageToBDD(newPage);
     push(choicesRef, {...choice,
-    	pageId:props.page.id,
+    	pageId:page.id,
     	sendToPageId:newPageId,
     	title:"mon super choix", 
     });
   };
+
 
   useEffect(() => {
     onValue(choicesRef, (snapshot) => {
@@ -54,26 +63,26 @@ export function PageCard(props){
 	return <div className="col-12 page-container">
 		<div className="card-page-container">
     	<div className="card card-page rounded-0 shadow-sm bg-white">
-    		<PageCardNavBar page={props.page} setCurrentePageId={props.setCurrentePageId}/>
+    		<PageCardNavBar page={page} setCurrentePageId={setCurrentePageId}/>
     		<div className="page-body-container bg-dark bg-opacity-10">
 	        <div className="card bg-light m-2">
 	          <PageTags/>
-	          <PageText page={props.page}/>
+	          <PageText page={page}/>
 	          {choices.length > 0 &&
-	          	choices.map((choice)=> <PageListChoices key={choice.id} choice={choice} setCurrentePageId={props.setCurrentePageId}/>)
+	          	choices.map((choice)=> <PageListChoices key={choice.id} choice={choice} setCurrentePageId={setCurrentePageId}/>)
 					  }
 	        </div>
 	      </div>
-	      <PageCardNavBarFooter page={props.page} addNewChoiceToBDD={addNewChoiceToBDD}/>
+	      <PageCardNavBarFooter choices={choices} updatePageToBDD={updatePageToBDD} page={page} addNewChoiceToBDD={addNewChoiceToBDD}/>
     	</div>
     </div>
 	</div>
 
 }
 
-export function PageCardNavBar(props){
+export function PageCardNavBar({page, setCurrentePageId}){
 	const handleClickGoToPreviousPage = e => {
-		props.setCurrentePageId(props.page.previousPageId);
+		setCurrentePageId(page.previousPageId);
 	}
 
 	return <div className="navbar bg-light p-2">
@@ -82,10 +91,10 @@ export function PageCardNavBar(props){
 	    <div className="page-body-container bg-dark bg-opacity-10">
 	    </div>
 	    <button 
-	    	disabled={props.page.first === true ? true : false}
+	    	disabled={page.first === true ? true : false}
 	    	type="button" 
 	    	onClick={handleClickGoToPreviousPage}
-	    	className="btn btn-sm btn-light"><i className="bi bi-caret-up-fill"></i></button>
+	    	className="btn btn-sm btn-light rounded-circle"><i className="bi bi-caret-up-fill"></i></button>
 	  </div>
 	</div>
 }
@@ -98,71 +107,68 @@ export function PageTags(){
 	</div>
 }
 
-export function PageText(props){
-	return <div className="card-body">
-		<h5 className="card-title">{props.page.title}</h5>
-		<p className="card-text">{props.page.text}</p>
+export function PageText({page}){
+
+	const handleClickEditPage = ()=>{
+		console.log("toto");
+	}
+
+	return <div className="card-body" onClick={handleClickEditPage}>
+		<h5 className="card-title">{page.title}</h5>
+		<p className="card-text">{page.text}</p>
 	</div>
 }
 
-export function PageListChoices(props){
+export function PageListChoices({choice, setCurrentePageId}){
+	const handleClickGoToNexPage = ()=>{
+		props.setCurrentePageId(choice.sendToPageId);
+	}
+
 	return <div className="card bg-light rounded-0 border-0">
 	  <ul className="list-group list-group-flush">
-	  	<PageChoice choice={props.choice} setCurrentePageId={props.setCurrentePageId}/>
+	  	<li className="list-group-item d-flex justify-content-between align-items-center bg-light rounded-0 border-1">
+	      {choice.title}
+	      <button 
+	      	type="button"
+	      	onClick={handleClickGoToNexPage} 
+	      	className="btn btn-sm btn-light rounded-circle">
+	      	<i className="bi bi-caret-right-fill"></i>
+	      </button>
+	    </li>
+	    <PageChoiceTagsToHave/>
+	    <PageChoiceTagsNotToHave/>
 	  </ul>
 	</div>
 }
 
-export function PageChoice(props){
-	const handleClickGoToNexPage = ()=>{
-		props.setCurrentePageId(props.choice.sendToPageId);
-	}
-
-	return <>
-		<li className="list-group-item d-flex justify-content-between align-items-center bg-light rounded-0 border-1">
-      {props.choice.title}
-      <button 
-      	type="button"
-      	onClick={handleClickGoToNexPage} 
-      	className="btn btn-sm btn-light">
-      	<i className="bi bi-caret-right-fill"></i>
-      </button>
-    </li>
-    <PageChoiceTagsToHave/>
-    <PageChoiceTagsNotToHave/>
-	</>
-}
-
 export function PageChoiceTagsToHave(){
 	return <li className="list-group-item list-group-item-success rounded-0 border-0">
-    <span className="badge bg-secondary bg-success m-1"><i className="bi bi-x"></i>Secondary</span>
-    <span className="badge bg-secondary bg-success m-1"><i className="bi bi-x"></i>Secondary</span>
-    <span className="badge bg-secondary bg-success m-1"><i className="bi bi-x"></i>Secondary</span>
+    <span className="badge bg-secondary bg-success m-1"><i className="bi bi-x"></i>Epee</span>
   </li>
 }
 
 export function PageChoiceTagsNotToHave(){
 	return	<li className="list-group-item list-group-item-danger rounded-0 border-0">
-    <span className="badge bg-secondary bg-danger m-1"><i className="bi bi-x"></i>Secondary</span>
-    <span className="badge bg-secondary bg-danger m-1"><i className="bi bi-x"></i>Secondary</span>
-    <span className="badge bg-secondary bg-danger m-1"><i className="bi bi-x"></i>Secondary</span>
+    <span className="badge bg-secondary bg-danger m-1"><i className="bi bi-x"></i>30 pièces</span>
+    <span className="badge bg-secondary bg-danger m-1"><i className="bi bi-x"></i>Corde</span>
   </li>
 }
 
 
-export function PageCardNavBarFooter(props){
+export function PageCardNavBarFooter({page, choices, updatePageToBDD, addNewChoiceToBDD}){
 	const handleClickAddChoice = ()=>{
 		const choice = {
-			pageId: props.page.id,
+			pageId:page.id,
 			sendToPageId:0,
 		}
 		props.addNewChoiceToBDD(choice);
 	}
 	return <div className="navbar justify-content-end p-2">
+		<PageEditModal updatePageToBDD={updatePageToBDD} page={page} choices={choices}/>
 		<button 
 			type="button" 
 			onClick={handleClickAddChoice} 
-			className="btn btn-primary btn-sm"><i className="bi bi-plus">Ajouter un choix</i></button>
+			className="btn btn-primary btn-sm ms-2"><i className="bi bi-plus">Ajouter un choix</i></button>
 	</div>
 }
 

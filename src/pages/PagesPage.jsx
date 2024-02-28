@@ -12,8 +12,15 @@ export function PagesPage() {
   const [pages, setPages] = useState([]);
   const [currentePageId, setCurrentePageId] = useState(null);
   const params = useParams();
-  //get all the pages of the story
+  //ref of all the pages of the story
   const pagesRef =ref(db, 'pages/' + params.id);
+  /*
+  //ref for the currente page
+  const pageRef = ref(db, `pages/${params.id}/${currentePageId}`);
+  //ref of all the choice of the currente page
+  const choicesRef = ref(db, 'choices/' + currentePageId);
+  */
+  //Get all the pages of the story
   useEffect(() => {
     onValue(pagesRef, (snapshot) => {
       let data = [];
@@ -41,6 +48,7 @@ export function PagesPage() {
     <PagesMainNav addNewPageToBDD={addNewPageToBDD} /> 
     <div className="row g-0 body-container">
       <Pages
+        storyId={params.id}
         pages={pages}
         currentePageId={currentePageId}
         setCurrentePageId={setCurrentePageId}

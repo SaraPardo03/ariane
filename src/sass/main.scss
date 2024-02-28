@@ -1,5 +1,5 @@
 $mainNavHeight: 110px;
-$cardPagePadding:10px;
+$cardPagePadding:0px;
 $cardPagePaddingFirstAndLast: 5px;
 $pagesListFollowingToShow: calc(20px + 2*$cardPagePadding);
 $pageListeHeight: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow));
@@ -77,6 +77,20 @@ body.modal-open {
 
 .page-body-container{
     overflow-y: auto;
+    scrollbar-width: thin
+}
+
+// PAGE EDIT MODAL 
+.page-edit-modal{
+   height: calc(100% - 40px); 
+   //max-height: 100%;
+}
+.page-edit-modal-form{
+   height: calc(100% - 40px); 
+   scrollbar-width: thin
+}
+
+.page-edit-modal-body{
     scrollbar-width: thin
 }
 

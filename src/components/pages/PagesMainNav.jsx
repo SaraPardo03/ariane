@@ -8,29 +8,19 @@ function PagesMainNav(props) {
 		navigate(`/`);
 	}
 
-	const handleClickNewPage = e =>{
-		let newPage = {
-  		first:true,
-  	}
-		props.addNewPageToBDD(newPage);
-	}
-
-
 	return <nav className="navbar shadow-sm bg-light sticky-top p-1">
 	  <form className="container-fluid">
 	  	<button 
   		type="button" 
-  		className="btn btn-light"
+  		className="btn btn-light btn-sm rounded-circle"
   		onClick={handleClickGoToHome}>
   			<i className="bi-arrow-left-short"></i>
   		</button>
 	  	<div>Mon titre d'hitoire</div>
 	  	<button 
 	  		type="button" 
-	  		className="d-none d-md-block btn btn-sm btn-primary"
-	  		onClick={handleClickNewPage}>
-	  		<i className="bi bi-plus"></i>
-	  		<span> Nouvelle page </span>
+	  		className="d-none d-md-block btn btn-sm btn-light rounded-circle">
+	  		<i className="bi bi-three-dots"></i>
 	  	</button>
 	  </form>
 	</nav>;
