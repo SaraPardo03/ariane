@@ -18,8 +18,20 @@ body.modal-open {
 }
 
 /* ##############################################################
-                    STORIES PAGE COMPOMENTS 
+                    STORIESPAGE COMPOMENTS 
 ##################################################################*/
+
+// STORY CARD
+.story-card-container{
+    min-height: calc(100dvh - $mainNavHeight);
+    max-height: calc(100dvh - $mainNavHeight);
+}
+.story-card{
+    height: 100%;
+    overflow: auto;
+    scrollbar-width: thin;
+}
+
 // STORY EDIT MODAL
 .story-editModal{
    min-height: 100%; 
@@ -28,17 +40,15 @@ body.modal-open {
    scrollbar-width: thin;
 }
 
-.story-summary {
+.story-summary{
     height: calc(100dvh - 300px);
-  }
+ }
 
-.story-footer-button-text{
-    font-size: 0.8rem; 
-}
+
 
 
 /* ##############################################################
-                    PAGES PAGE COMPOMENTS 
+                    PAGESPAGE COMPOMENTS 
 ##################################################################*/
 .story-container{
     min-height: calc(100dvh - $mainNavHeight);
@@ -88,6 +98,12 @@ body.modal-open {
     scrollbar-width: thin
 }
 
+// PAGE FOOTER NAV 
+.story-footer-button-text{
+    font-size: 0.8rem; 
+}
+
+
 // PAGE EDIT MODAL 
 .page-edit-modal{
    height: calc(100% - 40px); 
@@ -102,7 +118,9 @@ body.modal-open {
     scrollbar-width: thin
 }
 
+
 //SCROLL SNAP VERTICAL AND HORIZONTAL
+/*
 .scrollbar-snap-y{
     scroll-snap-type: y mandatory;
 }
@@ -119,10 +137,10 @@ body.modal-open {
 .scrollbar-snap-section-x{
     scroll-snap-align: center;
     scroll-snap-stop:always;
-}
+}*/
 
 /* ##############################################################
-                    STORY COMPONENT
+                    MAP COMPONENT
 ##################################################################*/
 .story-map {
     min-height: calc(100dvh - calc($mainNavHeight + 20px ));

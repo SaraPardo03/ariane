@@ -4,7 +4,6 @@ import { useNavigation, NavLink, useParams } from 'react-router-dom';
 function PagesFooterMainNav() {
 	const { state } = useNavigation();
 	const params = useParams();
-	console.log(params);
 
 	return <nav id="pages-footer-main-nav" className="navbar shadow-sm bg-light fixed-bottom p-1">
     <form className="container-fluid">
