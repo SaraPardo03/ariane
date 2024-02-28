@@ -28,7 +28,6 @@ function StoryCard(props) {
 	};
 
 	const handleClickRemoveStory = e => {
-		console.log("handleClickRemoveStory", props.story);
 		props.deleteStoryToBDD(props.story);
 	};
 
@@ -42,7 +41,7 @@ function StoryCard(props) {
   className={props.nbStories < 3 ? "my-2 col-md-6" : "my-2 col-md-6 col-lg-4"}>
   	<div className="card">
 	    <div className="card-body">
-	    	<div>
+	    	<div className="mb-2">
 	    		<button
 	    			onClick={handleClickRemoveStory}
 			  		type="button" 
@@ -54,6 +53,9 @@ function StoryCard(props) {
 	      <span className="fw-lighter fs-6 fst-italic">Modifié le: {`${updateDate.getDate()}.${updateDate.getMonth()+1}.${updateDate.getFullYear()}`}</span>
 	      <br/>
 	      <span className="fw-lighter fs-6 fst-italic">Crée le: {`${createDate.getDate()}.${createDate.getMonth()+1}.${createDate.getFullYear()}`}</span>
+	    </div>
+	    <div className="card-body py-0">
+	      <p>{props.story.summary}</p>
 	    </div>
 	    <ul className="list-group list-group-flush p-2">
 		    <StoryCardInfo iconClass="bi-node-plus-fill" classColorIcon="text-danger opacity-75" infoName="nœuds ouverts" info={props.story.openNode}/>
