@@ -3,7 +3,7 @@ import { Button } from 'react-bootstrap';
 import { ErrorPage } from './pages/ErrorPage';
 import { PagesPage } from './pages/PagesPage';
 import { StoriesPage } from './pages/StoriesPage';
-import StoryMap from "./components/StoryMap.jsx";
+import { StoryMapPage } from "./pages/StoryMapPage.jsx";
 
 
 const router = createBrowserRouter([
@@ -26,17 +26,43 @@ const router = createBrowserRouter([
         children:[
           {
             path: '',
-            element: <div> Ma liste de page </div>
+            element: <NoStorySelected />
           },
           { 
             path: ":id", 
-            element: <><PagesPage /></>,
+            element: <><Outlet /></>,
+            children:[
+              {
+                path:'',
+                element: <PagesPage />
+              },
+              {
+                path:'map',
+                element: <StoryMapPage />
+              },
+              {
+                path:'chapters',
+                element: <StoryMapPage />
+              },
+              {
+                path:'scenes',
+                element: <StoryMapPage />
+              },
+              {
+                path:'notes',
+                element: <StoryMapPage />
+              },
+            ]
           },
         ]
       },
     ]
   }
 ])
+
+function NoStorySelected() {
+  return <div> Aucune histoire sélectionnée. </div>;
+}
 
 function App() {
   return <RouterProvider router={router} />
