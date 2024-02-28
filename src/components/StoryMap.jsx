@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 
 
 
-function StoryMap(props) {
+function StoryMap({pages, setCurrentePageId}) {
 	const storyMapContainer = useRef(null);
 	const canvas = useRef(null);
 	const paper = useRef(null);
@@ -64,7 +64,7 @@ function StoryMap(props) {
     paper.on('element:pointerdblclick', function(elementView) {
 		  let element = elementView.model;
   		let elementId = element.attr('id');
-  		props.setCurrentePageId(elementId);
+  		setCurrentePageId(elementId);
 		});
 
     paper.scale(zoomLevel, zoomLevel);
@@ -79,10 +79,13 @@ function StoryMap(props) {
 		 * @param {number} y - The y-coordinate of the page.
 		*/
     const drawPage = (page, index, x, y)=>{
-    	const nextPages = props.pages.filter(thispage => thispage.previousPageId === page.id);
+    	const nextPages = pages.filter(thispage => thispage.previousPageId === page.id);
     	let color = 'white';
     	if(nextPages.length === 0){
     		color = "rgba(255, 193, 7, 0.5)";
+    	}
+    	if(page.end){
+    		color = "rgba(40, 167, 69, 0.5)";
     	}
 	    let rect = new shapes.standard.Rectangle();
 	    rect.position(x, y + 100);
@@ -164,7 +167,7 @@ function StoryMap(props) {
    	const drawNextRow = (previousPages, x, y) => {
    		if(previousPages){
    			const previousPagesIds = previousPages?.map(page => page.id);
-   			const currentPages = props.pages.filter(page => previousPagesIds.includes(page.previousPageId));
+   			const currentPages = pages.filter(page => previousPagesIds.includes(page.previousPageId));
    			const nbCurrentePages = currentPages.length;
    			let middleCurrentPageIndex = Math.floor(nbCurrentePages / 2);
 
@@ -186,8 +189,8 @@ function StoryMap(props) {
    		}
    	};
 
-   	const firstPages = props.pages.filter(page => page.first);
-    //const firstPage = props.pages.find(page => page.first);
+   	const firstPages = pages.filter(page => page.first);
+    //const firstPage = pages.find(page => page.first);
 	  if (firstPages.length > 0) {
 	    let firstPageElement = new shapes.standard.Rectangle();
 	    firstPageElement.position(paper.options.width / 2 - 50, 10);
@@ -211,9 +214,9 @@ function StoryMap(props) {
     return () => {
       paper.remove();
     };
-  }, [props.pages, zoomLevel, directionXY]);
+  }, [pages, zoomLevel, directionXY]);
 
-	return	<div className="col d-none d-xl-block story-map" ref={storyMapContainer}>
+	return	<div className="col story-map" ref={storyMapContainer}>
     	<div className="canvas story-map-canvas" ref={canvas}></div>
     	<div>
     		<div className="buttons-container"> 

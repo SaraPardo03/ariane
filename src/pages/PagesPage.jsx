@@ -5,7 +5,6 @@ import { useParams } from "react-router-dom";
 import Pages from "../components/pages/Pages.jsx";
 import PagesMainNav from "../components/pages/PagesMainNav.jsx";
 import PagesFooterMainNav from "../components/pages/PagesFooterMainNav.jsx";
-
 import StoryMap from "../components/StoryMap.jsx";
 
 export function PagesPage() {
@@ -46,7 +45,7 @@ export function PagesPage() {
   
   return<>
     <PagesMainNav addNewPageToBDD={addNewPageToBDD} /> 
-    <div className="row g-0 body-container">
+    <div className="row g-0 body-container bg-dark bg-opacity-10">
       <Pages
         storyId={params.id}
         pages={pages}
@@ -54,7 +53,9 @@ export function PagesPage() {
         setCurrentePageId={setCurrentePageId}
         addNewPageToBDD={addNewPageToBDD}
       />
-      <StoryMap pages={pages} setCurrentePageId={setCurrentePageId}/>
+      <div className="col d-none d-xl-block">
+        <StoryMap pages={pages} setCurrentePageId={setCurrentePageId}/>
+      </div>
     </div>
     <PagesFooterMainNav/>  
   </>;

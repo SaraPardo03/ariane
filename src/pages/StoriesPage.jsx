@@ -61,7 +61,7 @@ export function StoriesPage() {
 
   return<>
     <StoriesMainNav stories={stories} addNewStoryToBDD={addNewStoryToBDD}/>
-    <div className="row g-0 body-container">
+    <div className="row g-0 body-container bg-secondary bg-opacity-10">
       <StoryEditModal isOpen={open} story={selectedStory} updateStoryToBDD={updateStoryToBDD} handleCloseModal={handleCloseModal}/>
       <Stories stories={stories} addNewStoryToBDD={addNewStoryToBDD} deleteStoryToBDD={deleteStoryToBDD} handleOpenModal={handleOpenModal} />
     </div>

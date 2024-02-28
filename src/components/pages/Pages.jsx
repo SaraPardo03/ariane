@@ -11,7 +11,7 @@ function Pages({storyId, pages, currentePageId, setCurrentePageId, addNewPageToB
 	}else{
 		currentPages = pages.filter(page => page.first == true);
 	}
-
+	
 	return <div className="col m-2">
 	{pages.length > 0 &&
   	<PageCard storyId={storyId} key={currentPages[0].id} addNewPageToBDD={addNewPageToBDD} page={currentPages[0]} setCurrentePageId={setCurrentePageId}/>
@@ -19,7 +19,7 @@ function Pages({storyId, pages, currentePageId, setCurrentePageId, addNewPageToB
 	</div>;
 }
 
-export default Pages;
+
 
 
 export function PageCard({storyId, page, addNewPageToBDD, setCurrentePageId}){
@@ -38,7 +38,7 @@ export function PageCard({storyId, page, addNewPageToBDD, setCurrentePageId}){
   		first:false,
   		previousPageId: page.id
   	}
-  	let newPageId = props.addNewPageToBDD(newPage);
+  	let newPageId = addNewPageToBDD(newPage);
     push(choicesRef, {...choice,
     	pageId:page.id,
     	sendToPageId:newPageId,
@@ -64,7 +64,7 @@ export function PageCard({storyId, page, addNewPageToBDD, setCurrentePageId}){
 		<div className="card-page-container">
     	<div className="card card-page rounded-0 shadow-sm bg-white">
     		<PageCardNavBar page={page} setCurrentePageId={setCurrentePageId}/>
-    		<div className="page-body-container bg-dark bg-opacity-10">
+    		<div className="page-body-container bg-secondary bg-opacity-25">
 	        <div className="card bg-light m-2">
 	          <PageTags/>
 	          <PageText page={page}/>
@@ -121,7 +121,7 @@ export function PageText({page}){
 
 export function PageListChoices({choice, setCurrentePageId}){
 	const handleClickGoToNexPage = ()=>{
-		props.setCurrentePageId(choice.sendToPageId);
+		setCurrentePageId(choice.sendToPageId);
 	}
 
 	return <div className="card bg-light rounded-0 border-0">
@@ -161,7 +161,7 @@ export function PageCardNavBarFooter({page, choices, updatePageToBDD, addNewChoi
 			pageId:page.id,
 			sendToPageId:0,
 		}
-		props.addNewChoiceToBDD(choice);
+		addNewChoiceToBDD(choice);
 	}
 	return <div className="navbar justify-content-end p-2">
 		<PageEditModal updatePageToBDD={updatePageToBDD} page={page} choices={choices}/>
@@ -171,5 +171,7 @@ export function PageCardNavBarFooter({page, choices, updatePageToBDD, addNewChoi
 			className="btn btn-primary btn-sm ms-2"><i className="bi bi-plus">Ajouter un choix</i></button>
 	</div>
 }
+
+export default Pages;
 
 
