@@ -1,4 +1,4 @@
-import { ref, push, set, remove, onValue } from 'firebase/database';
+import { ref, push, set, remove, update, get, child} from 'firebase/database';
 import { db } from '../configs/firebaseConfig';
 
 class Story {
@@ -6,13 +6,55 @@ class Story {
     this.id = data.id || null;
     this.createdAt = data.createdAt || null;
     this.updatedAt = data.updatedAt || null;
-    this.nbCharacters = data.nbCharacters || 0;
-    this.nbEnd = data.nbEnd || 0;
-    this.nbPages = data.nbPages || 0;
-    this.openNode = data.openNode || 0;
+    this.totalCharacters = data.totalCharacters || 0;
+    this.totalEnd = data.totalEnd || 0;
+    this.totalPages = data.totalPages || 0;
+    this.totalOpenNode = data.totalOpenNode || 0;
     this.summary = data.summary || '';
-    this.text = data.text || '';
     this.title = data.title || '';
+  }
+
+  static async getAllPagesFromStory(storyId) {
+    const pagesRef = ref(db, `pages/${storyId}`);
+    try {
+      const snapshot = await get(pagesRef);
+      
+      if (snapshot.exists()) {
+        const pages = [];
+        snapshot.forEach((childSnapshot) => {
+          pages.push(childSnapshot.val());
+        });
+        return pages;
+      } else {
+        return [];
+      }
+    } catch (error) {
+      return [];  
+    }
+  }
+
+  static async updateStats(storyId) {
+    const pages = await Story.getAllPagesFromStory(storyId);
+
+    let totalCharacters = 0;
+    let totalPages = 0;
+    let totalEnd = 0;
+    let totalOpenNode = 0;
+
+    pages.forEach(page => {
+      totalCharacters += page.totalCharacters;
+      totalPages++;
+      if (page.end) totalEnd++;
+      //if (!page.end && Object.keys(page.choices).length > 0) totalOpenNode++;
+    });
+
+    const storyRef = ref(db, `stories/${storyId}`);
+    await update(storyRef, {
+      totalCharacters: totalCharacters,
+      totalEnd: totalEnd,
+      totalPages: totalPages,
+      totalOpenNode: totalOpenNode
+    });
   }
 
   // Method to save a new story to the database
@@ -20,15 +62,15 @@ class Story {
     const storyData = {
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
-      nbCharacters : this.nbCharacters,
-      nbEnd : this.nbEnd,
-      nbPages: this.nbPages,
-      nbEnd : this.nbEnd,
-      openNode :this.openNode,
+      totalCharacters : this.totalCharacters,
+      totalEnd : this.totalEnd,
+      totalPages: this.totalPages,
+      totalEnd : this.totalEnd,
+      totalOpenNode :this.totalOpenNode,
       summary: this.summary,
-      text: this.text,
       title: this.title,
     };
+
     if (this.id) {
       await set(ref(db, `stories/${this.id}`), storyData);
       return this.id;
@@ -65,7 +107,5 @@ class Story {
     const pageRef = ref(db, `choices/${this.id}`);
     await remove(pageRef);
   }
-
 }
-
 export default Story;

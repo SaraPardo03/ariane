@@ -32,24 +32,21 @@ export function StoriesPage() {
     const newStory = new Story(story);
     newStory.createdAt = serverTimestamp();
     newStory.updatedAt = serverTimestamp();
-    newStory.nbPages = 1;
 
    // Save the new story to the database
     const storyId = await newStory.save();
-
+    
     // Add the first page to the story
     const firstPage = new Page({
       end: false,
       first: true,
-      nbCharacters: 0,
-      previousNbCharacters: 0,
       title: "Titre",
       text: "Que l'aventure commence!"
     });
 
     await firstPage.save(storyId);
 
-    return storyId; // Save the first page with the story ID
+    return storyId; // Save the first page with the story ID*/
   };
 
   const updateStoryToBDD = (story) => {

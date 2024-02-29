@@ -57,11 +57,7 @@ function EditPageForm({page, choices, updatePageToBDD, handleClose}){
   };
 
   const handleSubmit = (e)=>{
-    const textValue = textareaRef.current.value;
-    const nbCharacters = textValue.length;
-    const previousNbCharacters = formPage.nbCharacters;
-    const updatedPage = { ...formPage, nbCharacters, previousNbCharacters};
-    updatePageToBDD(updatedPage);
+    updatePageToBDD(formPage);
     handleClose();
   };
 

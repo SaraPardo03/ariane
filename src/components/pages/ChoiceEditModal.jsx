@@ -53,15 +53,6 @@ function EditChoiceForm({page, addNewChoiceToBDD, handleClose}){
     handleClose();
   };
 
-  /*
-  const handleSubmit = (e)=>{
-    const newChoice = {...formChoice, pageId:page.id};
-    addNewChoiceToBDD(choice);
-    console.log("handleSubmit", formChoice);
-    //addNewChoiceToBDD(formChoice);
-    //handleClose();
-  };*/
-
   return <>
     <Modal.Body className={"choice-edit-modal-body bg-secondary bg-opacity-10"}>
       <Form className="choice-edit-modal">

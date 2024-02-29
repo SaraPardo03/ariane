@@ -55,10 +55,10 @@ function StoryCard(props) {
 	      <p>{props.story.summary}</p>
 	    </div>
 	    <ul className="list-group list-group-flush p-2">
-		    <StoryCardInfo iconClass="bi-node-plus-fill" classColorIcon="text-danger opacity-75" infoName="nœuds ouverts" info={props.story.openNode}/>
-		    <StoryCardInfo iconClass="bi-node-minus-fill" classColorIcon="text-success opacity-75" infoName="nombre de fin" info={props.story.nbEnd}/>
-		    <StoryCardInfo iconClass="bi-collection" classColorIcon="" infoName="nombre de pages" info={props.story.nbPages}/>
-		    <StoryCardInfo iconClass="bi-alphabet-uppercase" classColorIcon="text-secondary" infoName="nombre de caractères" info={props.story.nbCharacters}/>
+		    <StoryCardInfo iconClass="bi-node-plus-fill" classColorIcon="text-danger opacity-75" infoName="nœuds ouverts" info={props.story.totalOpenNode}/>
+		    <StoryCardInfo iconClass="bi-node-minus-fill" classColorIcon="text-success opacity-75" infoName="nombre de fin" info={props.story.totalEnd}/>
+		    <StoryCardInfo iconClass="bi-collection" classColorIcon="" infoName="nombre de pages" info={props.story.totalPages}/>
+		    <StoryCardInfo iconClass="bi-alphabet-uppercase" classColorIcon="text-secondary" infoName="nombre de caractères" info={props.story.totalCharacters}/>
 	    </ul>
 	    <div className="navbar justify-content-end p-2">
 	    	<StoryEditModal story={props.story} updateStoryToBDD={props.updateStoryToBDD}/>
@@ -92,10 +92,6 @@ function StoryAddCard({addNewStoryToBDD, nbStories}) {
 	const handleClickNewStory = e => {
 		const newStory = {
 			title: "Titre",
-			openNode: 0,
-			nbEnd: 0,
-			nbPages:0,
-			nbCharacters:0,
 		}
 		addNewStoryToBDD(newStory);
 	}
