@@ -1,9 +1,11 @@
 import { ref, set, onValue, push, serverTimestamp} from "firebase/database";
 import { useState, useEffect, useRef, useMemo} from "react";
 import { db } from '../../configs/firebaseConfig';
+import Page from "../../models/Page";
 import PageEditModal from './PageEditModal';
+import ChoiceEditModal from './ChoiceEditModal';
 
-function Pages({storyId, pages, currentePageId, setCurrentePageId, addNewPageToBDD}) {
+function Pages({storyId, pages, addNewPageToBDD, updatePageToBDD, addNewChoiceToBDD, currentePageId, setCurrentePageId}) {
 	let currentPages = [];
 
 	if(currentePageId !== null){
@@ -11,41 +13,25 @@ function Pages({storyId, pages, currentePageId, setCurrentePageId, addNewPageToB
 	}else{
 		currentPages = pages.filter(page => page.first == true);
 	}
-	
+
 	return <div className="col m-2">
 	{pages.length > 0 &&
-  	<PageCard storyId={storyId} key={currentPages[0].id} addNewPageToBDD={addNewPageToBDD} page={currentPages[0]} setCurrentePageId={setCurrentePageId}/>
+  	<PageCard 
+  	storyId={storyId}  
+  	page={currentPages[0]}
+  	addNewPageToBDD={addNewPageToBDD}
+  	updatePageToBDD={updatePageToBDD}
+  	addNewChoiceToBDD={addNewChoiceToBDD}  
+  	setCurrentePageId={setCurrentePageId} 
+  	key={currentPages[0].id}/>
    }
 	</div>;
 }
 
-
-
-
-export function PageCard({storyId, page, addNewPageToBDD, setCurrentePageId}){
+export function PageCard({storyId, page, addNewPageToBDD, updatePageToBDD, addNewChoiceToBDD, setCurrentePageId}){
 	const [choices, setChoices] = useState([]);
 	const pageRef = ref(db, `pages/${storyId}/${page.id}`);
-  const choicesRef = ref(db, 'choices/' + page.id);
-
-
-  const updatePageToBDD = (page) => {
-    const pageId = page.id;
-		set(pageRef, {...page, id:null});
-  };
-
-  const addNewChoiceToBDD = (choice) => {
-  	let newPage = {
-  		first:false,
-  		previousPageId: page.id
-  	}
-  	let newPageId = addNewPageToBDD(newPage);
-    push(choicesRef, {...choice,
-    	pageId:page.id,
-    	sendToPageId:newPageId,
-    	title:"mon super choix", 
-    });
-  };
-
+  const choicesRef = ref(db, `choices/${page.id}`);
 
   useEffect(() => {
     onValue(choicesRef, (snapshot) => {
@@ -58,7 +44,6 @@ export function PageCard({storyId, page, addNewPageToBDD, setCurrentePageId}){
       //onlyOnce: true
     });
   }, []);
-
 
 	return <div className="col-12 page-container">
 		<div className="card-page-container">
@@ -73,7 +58,11 @@ export function PageCard({storyId, page, addNewPageToBDD, setCurrentePageId}){
 					  }
 	        </div>
 	      </div>
-	      <PageCardNavBarFooter choices={choices} updatePageToBDD={updatePageToBDD} page={page} addNewChoiceToBDD={addNewChoiceToBDD}/>
+	      <PageCardNavBarFooter 
+	      choices={choices}
+	      page={page}
+	      updatePageToBDD={updatePageToBDD} 
+	      addNewChoiceToBDD={addNewChoiceToBDD}/>
     	</div>
     </div>
 	</div>
@@ -159,16 +148,12 @@ export function PageCardNavBarFooter({page, choices, updatePageToBDD, addNewChoi
 	const handleClickAddChoice = ()=>{
 		const choice = {
 			pageId:page.id,
-			sendToPageId:0,
 		}
 		addNewChoiceToBDD(choice);
 	}
 	return <div className="navbar justify-content-end p-2">
 		<PageEditModal updatePageToBDD={updatePageToBDD} page={page} choices={choices}/>
-		<button 
-			type="button" 
-			onClick={handleClickAddChoice} 
-			className="btn btn-primary btn-sm ms-2"><i className="bi bi-plus">Ajouter un choix</i></button>
+		<ChoiceEditModal addNewChoiceToBDD={addNewChoiceToBDD} page={page}/>
 	</div>
 }
 

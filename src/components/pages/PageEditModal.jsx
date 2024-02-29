@@ -31,7 +31,6 @@ function PageEditModal({page, choices, updatePageToBDD}) {
           page={page} 
           choices={choices} 
           updatePageToBDD={updatePageToBDD} 
-          page={page} 
           handleClose={handleClose}/>
       </Modal>
     </>
@@ -58,7 +57,11 @@ function EditPageForm({page, choices, updatePageToBDD, handleClose}){
   };
 
   const handleSubmit = (e)=>{
-    updatePageToBDD(formPage);
+    const textValue = textareaRef.current.value;
+    const nbCharacters = textValue.length;
+    const previousNbCharacters = formPage.nbCharacters;
+    const updatedPage = { ...formPage, nbCharacters, previousNbCharacters};
+    updatePageToBDD(updatedPage);
     handleClose();
   };
 

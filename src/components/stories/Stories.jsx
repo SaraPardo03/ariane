@@ -8,7 +8,7 @@ function Stories(props) {
       <div className="col-12">
         <div className="row p-2">
         	{props.stories.length > 0 &&
-        		props.stories.map((story)=> <StoryCard key={story.id} story={story}  updateStoryToBDD={props.updateStoryToBDD}  deleteStoryToBDD={props.deleteStoryToBDD} handleOpenModal={props.handleOpenModal}  nbStories={props.stories.length}/>)
+        		props.stories.map((story)=> <StoryCard key={story.id} story={story}  updateStoryToBDD={props.updateStoryToBDD}  deleteStoryToBDD={props.deleteStoryToBDD} nbStories={props.stories.length}/>)
       		}
       		<StoryAddCard addNewStoryToBDD={props.addNewStoryToBDD}  nbStories={props.stories.length}/>
         </div>
@@ -22,10 +22,6 @@ function StoryCard(props) {
 
 	const handleClickGoToStory = e => {
 		navigate(`/story/` + props.story.id);
-	};
-
-	const handleClickStoryEditModalOpen = e => {
-		props.handleOpenModal(props.story);
 	};
 
 	const handleClickRemoveStory = e => {
@@ -92,19 +88,19 @@ function StoryCardInfo(props){
   </li>
 }
 
-function StoryAddCard(props) {
+function StoryAddCard({addNewStoryToBDD, nbStories}) {
 	const handleClickNewStory = e => {
-		const storyToAdd = {
+		const newStory = {
 			title: "Titre",
 			openNode: 0,
 			nbEnd: 0,
 			nbPages:0,
 			nbCharacters:0,
 		}
-		props.addNewStoryToBDD(storyToAdd);
+		addNewStoryToBDD(newStory);
 	}
   return <div 
-  className={props.nbStories < 3 ? "my-2 col-md-6 cursor-pointer" : "my-2 col-md-6 col-lg-4 cursor-pointer"}
+  className={nbStories < 3 ? "my-2 col-md-6 cursor-pointer" : "my-2 col-md-6 col-lg-4 cursor-pointer"}
   onClick={handleClickNewStory}>
   	<div className="card">
 	    <div className="card-body border-bottom">

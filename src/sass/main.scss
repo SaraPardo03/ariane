@@ -119,6 +119,23 @@ body.modal-open {
 }
 
 
+/* ##############################################################
+                    CHOICE COMPOMENTS 
+##################################################################*/
+// PAGE EDIT MODAL 
+.choice-edit-modal{
+   height: calc(100% - 40px); 
+   //max-height: 100%;
+}
+.choice-edit-modal-form{
+   height: calc(100% - 40px); 
+   scrollbar-width: thin
+}
+
+.choice-edit-modal-body{
+    scrollbar-width: thin
+}
+
 //SCROLL SNAP VERTICAL AND HORIZONTAL
 /*
 .scrollbar-snap-y{
