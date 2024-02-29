@@ -13,8 +13,8 @@ function PageEditModal({page, choices, updatePageToBDD}) {
       <button 
       type="button" 
       onClick={handleShow} 
-      className="btn btn-secondary btn-sm">
-        <i className="bi bi-pencil">Editer</i>
+      className="btn btn-primary btn-sm">
+        <i className="bi bi-pencil">Rédiger</i>
       </button>
 
       <Modal
@@ -57,6 +57,7 @@ function EditPageForm({page, choices, updatePageToBDD, handleClose}){
   };
 
   const handleSubmit = (e)=>{
+    e.preventDefault();
     updatePageToBDD(formPage);
     handleClose();
   };
@@ -68,10 +69,10 @@ function EditPageForm({page, choices, updatePageToBDD, handleClose}){
     <Modal.Body className={"page-edit-modal-body bg-secondary bg-opacity-10"}>
       <Form className="page-edit-modal">
         <Form.Group className="mb-3">
-          <Form.Label>Titre</Form.Label>
+          <Form.Label>Titre de la page</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Titre"
+            placeholder=""
             value={formPage.title}
             name="title"
             onChange={handleChange}

@@ -5,7 +5,7 @@ import Page from "../../models/Page";
 import PageEditModal from './PageEditModal';
 import ChoiceEditModal from './ChoiceEditModal';
 
-function Pages({storyId, pages, addNewPageToBDD, updatePageToBDD, addNewChoiceToBDD, currentePageId, setCurrentePageId}) {
+function Pages({storyId, pages, addNewPageToBDD, updatePageToBDD, addNewChoiceToBDD, updateChoiceToBDD, currentePageId, setCurrentePageId}) {
 	let currentPages = [];
 
 	if(currentePageId !== null){
@@ -21,7 +21,8 @@ function Pages({storyId, pages, addNewPageToBDD, updatePageToBDD, addNewChoiceTo
   	page={currentPages[0]}
   	addNewPageToBDD={addNewPageToBDD}
   	updatePageToBDD={updatePageToBDD}
-  	addNewChoiceToBDD={addNewChoiceToBDD}  
+  	addNewChoiceToBDD={addNewChoiceToBDD}
+  	updateChoiceToBDD={updateChoiceToBDD} 
   	setCurrentePageId={setCurrentePageId} 
   	key={currentPages[0].id}/>
    }
@@ -54,7 +55,7 @@ export function PageCard({storyId, page, addNewPageToBDD, updatePageToBDD, addNe
 	          <PageTags/>
 	          <PageText page={page}/>
 	          {choices.length > 0 &&
-	          	choices.map((choice)=> <PageListChoices key={choice.id} choice={choice} setCurrentePageId={setCurrentePageId}/>)
+	          	choices.map((choice)=> <PageListChoices page={page} choice={choice} addNewChoiceToBDD={addNewChoiceToBDD} setCurrentePageId={setCurrentePageId} key={choice.id}/>)
 					  }
 	        </div>
 	      </div>
@@ -76,23 +77,24 @@ export function PageCardNavBar({page, setCurrentePageId}){
 
 	return <div className="navbar bg-light p-2">
 	  <div className="container-fluid">
-	    <span>Chapitre : scéne</span>
+	    <span>Chapitre, scène</span>
 	    <div className="page-body-container bg-dark bg-opacity-10">
 	    </div>
 	    <button 
 	    	disabled={page.first === true ? true : false}
 	    	type="button" 
 	    	onClick={handleClickGoToPreviousPage}
-	    	className="btn btn-sm btn-light rounded-circle"><i className="bi bi-caret-up-fill"></i></button>
+	    	className="btn btn-sm btn-light rounded"><i className="bi bi-caret-up-fill"></i>
+	    	<span className="ms-2">Page précédente</span>
+	    	</button>
 	  </div>
 	</div>
 }
 
 export function PageTags(){
 	return <div className="card-body">
-		<span className="badge bg-secondary m-1"><i className="bi bi-x"></i>Secondary</span>
-		<span className="badge bg-secondary m-1"><i className="bi bi-x"></i>Secondary</span>
-		<span className="badge bg-secondary m-1"><i className="bi bi-x"></i>Secondary</span>
+		<span className="badge bg-secondary m-1"><i className="bi bi-x"></i>Indice</span>
+		<span className="badge bg-secondary m-1"><i className="bi bi-x"></i>Objet</span>
 	</div>
 }
 
@@ -108,14 +110,22 @@ export function PageText({page}){
 	</div>
 }
 
-export function PageListChoices({choice, setCurrentePageId}){
-	const handleClickGoToNexPage = ()=>{
+export function PageListChoices({page, choice, setCurrentePageId, addNewChoiceToBDD}){
+	const [isModalOpen, setIsModalOpen] = useState(false);
+	const handleClickGoToNexPage = (e)=>{
+		e.stopPropagation();
 		setCurrentePageId(choice.sendToPageId);
 	}
 
+	const handleClickEditChoice =(e)=>{
+		e.stopPropagation();
+		setIsModalOpen(true);
+	}
+
 	return <div className="card bg-light rounded-0 border-0">
+		<ChoiceEditModal choice={choice} edit={true} page={page} isOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
 	  <ul className="list-group list-group-flush">
-	  	<li className="list-group-item d-flex justify-content-between align-items-center bg-light rounded-0 border-1">
+	  	<li onClick={handleClickEditChoice} className="list-group-item d-flex justify-content-between align-items-center bg-light rounded-0 border-1">
 	      {choice.title}
 	      <button 
 	      	type="button"
@@ -145,6 +155,7 @@ export function PageChoiceTagsNotToHave(){
 
 
 export function PageCardNavBarFooter({page, choices, updatePageToBDD, addNewChoiceToBDD}){
+	const [isModalOpen, setIsModalOpen] = useState(false);
 	const handleClickAddChoice = ()=>{
 		const choice = {
 			pageId:page.id,
@@ -153,7 +164,7 @@ export function PageCardNavBarFooter({page, choices, updatePageToBDD, addNewChoi
 	}
 	return <div className="navbar justify-content-end p-2">
 		<PageEditModal updatePageToBDD={updatePageToBDD} page={page} choices={choices}/>
-		<ChoiceEditModal addNewChoiceToBDD={addNewChoiceToBDD} page={page}/>
+		<ChoiceEditModal addNewChoiceToBDD={addNewChoiceToBDD} page={page} isOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
 	</div>
 }
 

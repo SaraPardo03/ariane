@@ -34,7 +34,7 @@ function PagesFooterMainNav() {
         className="btn btn-light px-1 py-0 m-0 text-center border-0"
         activeclassname="active">
         <i className="fs-3 bi bi-images"></i>
-        <div className="story-footer-button-text">Scénes</div>
+        <div className="story-footer-button-text">Scènes</div>
       </NavLink>
       <NavLink
         to={`/story/${params.id}/notes`}

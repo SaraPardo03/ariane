@@ -10,7 +10,6 @@ function Stories(props) {
         	{props.stories.length > 0 &&
         		props.stories.map((story)=> <StoryCard key={story.id} story={story}  updateStoryToBDD={props.updateStoryToBDD}  deleteStoryToBDD={props.deleteStoryToBDD} nbStories={props.stories.length}/>)
       		}
-      		<StoryAddCard addNewStoryToBDD={props.addNewStoryToBDD}  nbStories={props.stories.length}/>
         </div>
       </div>
     </div>
@@ -27,7 +26,6 @@ function StoryCard(props) {
 	const handleClickRemoveStory = e => {
 		props.deleteStoryToBDD(props.story);
 	};
-
 
 	const updateDate = new Date(props.story.updatedAt);
 	const createDate = new Date(props.story.createdAt);

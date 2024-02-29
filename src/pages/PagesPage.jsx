@@ -3,6 +3,7 @@ import { db } from '../configs/firebaseConfig';
 import { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import Page from "../models/Page";
+import Story from "../models/Story";
 import Choice from "../models/Choice";
 import Pages from "../components/pages/Pages.jsx";
 import PagesMainNav from "../components/pages/PagesMainNav.jsx";
@@ -14,7 +15,7 @@ export function PagesPage() {
   const pagesRef =ref(db, 'pages/' + params.id);
   const [pages, setPages] = useState([]);
   const [currentePageId, setCurrentePageId] = useState(null);
-
+ 
   //Get all the pages of the story
   useEffect(() => {
     onValue(pagesRef, (snapshot) => {
@@ -27,12 +28,13 @@ export function PagesPage() {
       //onlyOnce: true
     });
   }, []);
+console.log("PagesPage");
 
   const addNewPageToBDD = async (page) => {
     const newPage = new Page(page);
     newPage.end = false;
     newPage.title = "Mon titre de page";
-    newPage.text = "mon text de page";
+    newPage.text = "Mon texte de page";
     // Save the new page to the database and get its ID
     const newPageId = await newPage.save(params.id);
 
@@ -58,8 +60,14 @@ export function PagesPage() {
     push(choicesRef, new Choice(choice));
   };
 
+
+  const updateChoiceToBDD = async (choice) => {
+    const choiceToUpdate = new Choice(choice);
+    await choiceToUpdate.update(choice.id);
+  };
+
   return<>
-    <PagesMainNav /> 
+    <PagesMainNav storyId={params.id}/> 
     <div className="row g-0 body-container bg-dark bg-opacity-10">
       <Pages
         storyId={params.id}
@@ -71,7 +79,7 @@ export function PagesPage() {
         setCurrentePageId={setCurrentePageId} 
       />
       <div className="col d-none d-xl-block">
-        <StoryMap pages={pages} setCurrentePageId={setCurrentePageId}/>
+        <StoryMap currentePageId={currentePageId} pages={pages} setCurrentePageId={setCurrentePageId}/>
       </div>
     </div>
     <PagesFooterMainNav/>  

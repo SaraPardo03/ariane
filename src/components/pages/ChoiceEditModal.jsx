@@ -4,14 +4,51 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Choice from "../../models/Choice";
 
-function ChoiceEditModal({page, addNewChoiceToBDD}) {
+function ChoiceEditModal({page, addNewChoiceToBDD, choice, isOpen, setIsModalOpen, edit}) {
+  const [formChoice, setFormChoice] = useState({ title: '', sendToPageId: '' });
+  const handleClose = () => {
+    setFormChoice({ title: '', sendToPageId: '' });
+    setIsModalOpen(false);
+  }
+  const handleShow = () => setIsModalOpen(true);
+  
+
+  useEffect(() => {
+    if (choice) {
+      setFormChoice(choice); // Mettre à jour le formulaire avec les données du choix existant
+    } else {
+      setFormChoice({ title: '', sendToPageId: '' }); // Réinitialiser le formulaire s'il n'y a pas de choix
+    }
+  }, [choice]);
+
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormChoice((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const newChoice = new Choice({ ...formChoice, pageId: page.id });
+    if(choice){
+      await newChoice.save(formChoice.id);
+    }else{
+      addNewChoiceToBDD(newChoice);
+    }
+      handleClose();
+  };
+  /*
   const [show, setShow] = useState(false); 
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleClose = () => setShow(false); 
+  const handleShow = () => setShow(true);*/
 
   return <>
-      <button 
+      <button
+      hidden = {edit}
       type="button" 
       onClick={handleShow} 
       className="btn btn-primary btn-sm ms-2">
@@ -22,37 +59,25 @@ function ChoiceEditModal({page, addNewChoiceToBDD}) {
       contentClassName="choice-edit-modal"
       size="lg" 
       fullscreen="lg-down"
-      show={show} 
+      show={isOpen}
       scrollable
       onHide={handleClose}
       backdrop="static">
         <Modal.Header className={"bg-secondary bg-opacity-10 border-0"} closeButton>
         </Modal.Header>
-          <EditChoiceForm 
+        <EditChoiceForm 
           page={page} 
-          addNewChoiceToBDD={addNewChoiceToBDD} 
-          handleClose={handleClose}/>
+          choice={choice}
+          handleClose={handleClose}
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          formChoice={formChoice}
+        />
       </Modal>
     </>
 }
 
-function EditChoiceForm({page, addNewChoiceToBDD, handleClose}){
-  const [formChoice, setFormChoice] = useState({ title: '' });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormChoice((prevData) => ({
-      ...prevData,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = (e) => {
-    const newChoice = { ...formChoice, pageId: page.id };
-    addNewChoiceToBDD(newChoice);
-    handleClose();
-  };
-
+function EditChoiceForm({page, handleClose, handleChange, handleSubmit, formChoice }){
   return <>
     <Modal.Body className={"choice-edit-modal-body bg-secondary bg-opacity-10"}>
       <Form className="choice-edit-modal">

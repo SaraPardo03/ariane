@@ -14,6 +14,23 @@ class Story {
     this.title = data.title || '';
   }
 
+  static async getTitleById(storyId) {
+    try {
+      const storyRef = ref(db, `stories/${storyId}`);
+      const snapshot = await get(storyRef);
+      
+      if (snapshot.exists()) {
+        const storyData = snapshot.val();
+        return storyData.title;
+      } else {
+        return null; 
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      return null; 
+    }
+  }
+
   static async getAllPagesFromStory(storyId) {
     const pagesRef = ref(db, `pages/${storyId}`);
     try {

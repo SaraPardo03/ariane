@@ -5,7 +5,7 @@ function StoriesMainNav(props) {
 
 	const handleClickNewStory = e => {
 		const storyToAdd = {
-			title: "Titre",
+			title: "Ma super histoire",
 			openNode: 0,
 			nbEnd: 0,
 			nbPages:0,
@@ -15,7 +15,7 @@ function StoriesMainNav(props) {
 	}
 	return <nav className="navbar shadow-sm bg-light sticky-top p-1">
 	  <form className="container-fluid">
-	  	<div>Mon supper nom d'application</div>
+	  	<div>Mon super nom d'application</div>
 	  	<button 
 	  		type="button" 
 	  		className="d-none d-md-block btn btn-sm btn-primary"

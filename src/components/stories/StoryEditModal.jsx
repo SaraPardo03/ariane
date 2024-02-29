@@ -48,6 +48,7 @@ function EditPageForm({story, updateStoryToBDD, handleClose}){
   };
 
   const handleSubmit = (e)=>{
+    e.preventDefault();
     updateStoryToBDD(formStory);
     handleClose();
   };
@@ -56,17 +57,17 @@ function EditPageForm({story, updateStoryToBDD, handleClose}){
     <Modal.Body className={"page-edit-modal-body bg-secondary bg-opacity-10"}>
       <Form className="page-edit-modal">
         <Form.Group className="mb-3">
-          <Form.Label>Titre</Form.Label>
+          <Form.Label>Titre de l'histoire</Form.Label>
           <Form.Control
             type="text"
-            placeholder="Titre"
+            placeholder="Ma super histoire"
             value={formStory.title}
             name="title"
             onChange={handleChange}
           />
         </Form.Group>
         <Form.Group className="mb-3 page-edit-modal"> 
-          <Form.Label>Résumer</Form.Label>
+          <Form.Label>Résumé de l'histoire</Form.Label>
           <Form.Control
           className="page-edit-modal-form"
           onChange={handleChange} 

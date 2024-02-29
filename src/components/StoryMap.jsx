@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from "react";
 
 
 
-function StoryMap({pages, setCurrentePageId}) {
+function StoryMap({pages, currentePageId, setCurrentePageId}) {
+	const [mapCurrentePageId, setMapCurrentePageId] = useState(currentePageId);
 	const storyMapContainer = useRef(null);
 	const canvas = useRef(null);
 	const paper = useRef(null);
@@ -64,6 +65,7 @@ function StoryMap({pages, setCurrentePageId}) {
     paper.on('element:pointerdblclick', function(elementView) {
 		  let element = elementView.model;
   		let elementId = element.attr('id');
+  		setMapCurrentePageId(elementId);
   		setCurrentePageId(elementId);
 		});
 
@@ -81,11 +83,17 @@ function StoryMap({pages, setCurrentePageId}) {
     const drawPage = (page, index, x, y)=>{
     	const nextPages = pages.filter(thispage => thispage.previousPageId === page.id);
     	let color = 'white';
+    	let currentPageColor = "black";
+    	let currentPageWidth = 2
     	if(nextPages.length === 0){
     		color = "rgba(255, 193, 7, 0.5)";
     	}
     	if(page.end){
     		color = "rgba(40, 167, 69, 0.5)";
+    	}
+    	if(page.id === currentePageId){
+    		currentPageColor = "rgba(0, 123, 255, 0.5)";
+    		currentPageWidth = 4
     	}
 	    let rect = new shapes.standard.Rectangle();
 	    rect.position(x, y + 100);
@@ -93,7 +101,8 @@ function StoryMap({pages, setCurrentePageId}) {
 	    rect.attr({
 	      body: {
 	        fill: color,
-	        strokeWidth: 0.5
+	        stroke:currentPageColor,
+	        strokeWidth: currentPageWidth
 	      },
 	      label: {
 	        text: page.title,
@@ -167,7 +176,7 @@ function StoryMap({pages, setCurrentePageId}) {
    	const drawNextRow = (previousPages, x, y) => {
    		if(previousPages){
    			const previousPagesIds = previousPages?.map(page => page.id);
-   			const currentPages = pages.filter(page => previousPagesIds.includes(page.previousPageId));
+   			const currentPages = pages.filter(page => previousPagesIds.includes(page.previousPageId)); 
    			const nbCurrentePages = currentPages.length;
    			let middleCurrentPageIndex = Math.floor(nbCurrentePages / 2);
 
@@ -214,18 +223,18 @@ function StoryMap({pages, setCurrentePageId}) {
     return () => {
       paper.remove();
     };
-  }, [pages, zoomLevel, directionXY]);
+  }, [pages, zoomLevel, directionXY, mapCurrentePageId]);
 
 	return	<div className="col story-map" ref={storyMapContainer}>
     	<div className="canvas story-map-canvas" ref={canvas}></div>
     	<div>
     		<div className="buttons-container"> 
-            <button onClick={handleZoomIn}>Zoom In</button>
-            <button onClick={handleZoomOut}>Zoom Out</button>
-            <button onClick={() => handleMove('up')}>Up</button>
-            <button onClick={() => handleMove('down')}>Down</button>
-            <button onClick={() => handleMove('left')}>Left</button>
-            <button onClick={() => handleMove('right')}>Right</button>
+            <button className="btn btn-sm btn-secondary" onClick={handleZoomIn}><i className="bi bi-zoom-in"></i></button>
+            <button className="btn btn-sm btn-secondary" onClick={handleZoomOut}><i className="bi bi-zoom-out"></i></button>
+            <button className="btn btn-sm btn-secondary" onClick={() => handleMove('up')}><i className="bi bi-arrow-up"></i></button>
+            <button className="btn btn-sm btn-secondary" onClick={() => handleMove('down')}><i className="bi bi-arrow-down"></i></button>
+            <button className="btn btn-sm btn-secondary" onClick={() => handleMove('left')}><i className="bi bi-arrow-left"></i></button>
+            <button className="btn btn-sm btn-secondary" onClick={() => handleMove('right')}><i className="bi bi-arrow-right"></i></button>
         </div>
       </div>
     </div>

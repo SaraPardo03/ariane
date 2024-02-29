@@ -31,7 +31,7 @@ export function StoryMapPage() {
   //
   return<> 
     <PagesMainNav/> 
-    <StoryMap pages={pages} setCurrentePageId={setCurrentePageId}/>
+    <StoryMap currentePageId={currentePageId} pages={pages} setCurrentePageId={setCurrentePageId}/>
     <PagesFooterMainNav/>
   </>
 }

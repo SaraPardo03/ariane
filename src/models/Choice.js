@@ -9,18 +9,19 @@ class Choice {
   }
 
   // Method to save a new choice to the database
-  async save() {
+  async save(choiceId) {
     const choiceData = {
         pageId: this.pageId,
         title: this.title,
         sendToPageId: this.sendToPageId
     };
 
+    console.log("save", choiceData);
     const choicesRef = ref(db, `choices/${this.pageId}`);
-    if (this.id) {
-        const choiceRef = ref(choicesRef, this.id);
+    if (choiceId) {
+        const choiceRef = ref(db, `choices/${this.pageId}/${choiceId}`);
         await set(choiceRef, choiceData);
-        return this.id;
+        return choiceId;
     } else {
         const newChoiceRef = push(choicesRef);
         await set(newChoiceRef, choiceData);
