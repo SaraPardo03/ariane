@@ -1,11 +1,11 @@
 @import 'node_modules/bootstrap/scss/bootstrap';
 
+
 $mainNavHeight: 110px;
 $cardPagePadding:0px;
 $cardPagePaddingFirstAndLast: 5px;
 $pagesListFollowingToShow: calc(20px + 2*$cardPagePadding);
 $pageListeHeight: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow));
-
 
 #pages-footer-main-nav a.active {
   color: $primary;
@@ -16,7 +16,6 @@ $pageListeHeight: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow)
 /* ##############################################################
                     STORIESPAGE COMPOMENTS 
 ##################################################################*/
-
 // STORY CARD
 .story-card-container{
     min-height: calc(100dvh - $mainNavHeight);
@@ -27,6 +26,11 @@ $pageListeHeight: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow)
     overflow: auto;
     scrollbar-width: thin;
 }
+
+.stories-footer-container{
+    margin-top:100px;
+}
+
 
 // STORY EDIT MODAL
 .story-editModal{

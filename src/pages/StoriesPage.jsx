@@ -8,7 +8,6 @@ import Page from '../models/Page';
 import StoriesMainNav from "../components/stories/StoriesMainNav.jsx";
 import StoriesFooterMainNav from "../components/stories/StoriesFooterMainNav.jsx";
 
-
 export function StoriesPage() {
   const bodyRef = useRef(document.body);
   const [stories, setStories] = useState([]);
@@ -62,7 +61,7 @@ export function StoriesPage() {
     //and delete the story
     storyToDelete.delete();
   };
-
+  
   return<>
     <StoriesMainNav stories={stories} addNewStoryToBDD={addNewStoryToBDD}/>
     <div className="row g-0 body-container bg-secondary bg-opacity-10">

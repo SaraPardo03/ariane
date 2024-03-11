@@ -1,4 +1,5 @@
 import {useNavigation } from 'react-router-dom'
+import Button from 'react-bootstrap/Button';
 
 function StoriesFooterMainNav(props) {
 	const { state } = useNavigation();
@@ -13,16 +14,11 @@ function StoriesFooterMainNav(props) {
 		}
 		props.addNewStoryToBDD(storyToAdd);
 	}
-	return <nav className="d-md-none navbar shadow-sm bg-white bg-opacity-10 fixed-bottom p-2">
-		<form className="container-fluid">
-		<div></div>
-			<button 
-			type="button"
-			className="btn btn-primary rounded-circle"
-			onClick={handleClickNewStory}>
-					<i className="fs-1 bi bi-plus"></i>
-			</button>
-		</form>
+
+	return <nav className="stories-footer-container d-md-none">
+		<Button className="rounded-circle position-fixed bottom-0 end-0 m-4"  variant="primary" onClick={handleClickNewStory}>
+	        <i className="fs-1 bi bi-plus"></i>
+	  </Button>
 	</nav>;
 }
 
