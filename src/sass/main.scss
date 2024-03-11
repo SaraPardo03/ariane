@@ -6,10 +6,6 @@ $cardPagePaddingFirstAndLast: 5px;
 $pagesListFollowingToShow: calc(20px + 2*$cardPagePadding);
 $pageListeHeight: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow));
 
-/* if a modal is open we disable the scroll*/
-body.modal-open {
-    overflow: hidden;
-}
 
 #pages-footer-main-nav a.active {
   color: $primary;
@@ -43,8 +39,6 @@ body.modal-open {
 .story-summary{
     height: calc(100dvh - 300px);
  }
-
-
 
 
 /* ##############################################################
@@ -107,7 +101,6 @@ body.modal-open {
 // PAGE EDIT MODAL 
 .page-edit-modal{
    height: calc(100% - 40px); 
-   //max-height: 100%;
 }
 .page-edit-modal-form{
    height: calc(100% - 40px); 
@@ -125,7 +118,6 @@ body.modal-open {
 // PAGE EDIT MODAL 
 .choice-edit-modal{
    height: calc(100% - 40px); 
-   //max-height: 100%;
 }
 .choice-edit-modal-form{
    height: calc(100% - 40px); 
@@ -174,6 +166,7 @@ body.modal-open {
 .buttons-container button {
   margin-left: 5px; /* Ajouter une marge entre les boutons */
 }
+
 
 // MEDIA QUERY FOR PAGES 
 

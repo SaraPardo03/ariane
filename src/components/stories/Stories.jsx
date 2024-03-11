@@ -1,6 +1,8 @@
 import {useNavigation, useNavigate} from 'react-router-dom';
 import { useState} from "react";
+import Button from 'react-bootstrap/Button';
 import StoryEditModal from "./StoryEditModal.jsx";
+import DeleteConfirmationModal from "../DeleteConfirmationModal.jsx";
 
 function Stories(props) {
 	  return <div className="container">
@@ -18,7 +20,7 @@ function Stories(props) {
 
 function StoryCard(props) {
 	const navigate = useNavigate();
-
+	const [modalShow, setModalShow] = useState(false);
 	const handleClickGoToStory = e => {
 		navigate(`/story/` + props.story.id);
 	};
@@ -37,12 +39,6 @@ function StoryCard(props) {
   	<div className="card story-card shadow-sm">
 	    <div className="card-body">
 	    	<div className="mb-2">
-	    		<button
-	    			onClick={handleClickRemoveStory}
-			  		type="button" 
-			  		className="btn btn-sm btn-secondary rounded-circle me-2">
-			  		<i className="bi bi-trash3 "></i>
-			  	</button>
 		      <span className="fs-5">{props.story.title}</span>
 		    </div>
 	      <span className="fw-lighter fs-6 fst-italic">Modifié le: {`${updateDate.getDate()}.${updateDate.getMonth()+1}.${updateDate.getFullYear()}`}</span>
@@ -59,6 +55,15 @@ function StoryCard(props) {
 		    <StoryCardInfo iconClass="bi-alphabet-uppercase" classColorIcon="text-secondary" infoName="nombre de caractères" info={props.story.totalCharacters}/>
 	    </ul>
 	    <div className="navbar justify-content-end p-2">
+	    	<Button className="btn btn-sm btn-primary me-2" variant="danger" onClick={() => setModalShow(true)}>
+	    		<i className="bi bi-trash3 me-2"></i>
+	    		<span>Supprimer</span>
+	      </Button>
+	      <DeleteConfirmationModal 
+	    		isOpen={modalShow}
+	     	 	onHide={() => setModalShow(false)}
+	     	 	onDelete={handleClickRemoveStory}
+	    	/>
 	    	<StoryEditModal story={props.story} updateStoryToBDD={props.updateStoryToBDD}/>
 		  	<button 
 		  		type="button" 
