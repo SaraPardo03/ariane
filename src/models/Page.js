@@ -1,5 +1,6 @@
 import { ref, push, equalTo, set, remove } from 'firebase/database';
 import { db } from '../configs/firebaseConfig';
+import {getAuth } from 'firebase/auth';
 import Story from './Story'; 
 
 class Page {
@@ -17,6 +18,7 @@ class Page {
   }
   // Method to save a new page to the database
   async save(storyId) {
+    const auth = getAuth();
     const pageData = {
       end: this.end,
       first: this.first,  
@@ -25,7 +27,7 @@ class Page {
       previousPageId : this.previousPageId ,
       totalCharacters: this.text.length,
     };
-    const pagesRef = ref(db, `pages/${storyId}`);
+    const pagesRef = ref(db, `pages/${auth.currentUser.uid}/${storyId}`);
     if (this.id) {
       const pageRef = ref(pagesRef, this.id);
       await set(pageRef, pageData);
@@ -41,7 +43,8 @@ class Page {
 
     // Method to update a page in the database
   async update(storyId, pageId) {
-    const pageRef = ref(db, `pages/${storyId}/${pageId}`);
+    const auth = getAuth();
+    const pageRef = ref(db, `pages/${auth.currentUser.uid}/${storyId}/${pageId}`);
     const pageData = {
       end: this.end,
       first: this.first,
@@ -56,7 +59,8 @@ class Page {
   
   // Method to delete a page from the database
   async delete(storyId, pageId) {
-    const pageRef = ref(db, `pages/${storyId}/${pageId}`);
+    const auth = getAuth();
+    const pageRef = ref(db, `pages/${auth.currentUser.uid}/${storyId}/${pageId}`);
     await remove(pageRef);
     await Page.notifyStory(storyId);
   }

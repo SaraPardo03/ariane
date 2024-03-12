@@ -1,5 +1,6 @@
 import { ref, set, onValue, push, serverTimestamp} from "firebase/database";
 import { db } from '../configs/firebaseConfig';
+import {getAuth } from 'firebase/auth';
 import { useRef, useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
 import Story from '../models/Story';
@@ -10,8 +11,9 @@ import StoriesFooterMainNav from "../components/stories/StoriesFooterMainNav.jsx
 
 export function StoriesPage() {
   const bodyRef = useRef(document.body);
+  const auth = getAuth();
   const [stories, setStories] = useState([]);
-  const storiesRef = ref(db, 'stories/');
+  const storiesRef = ref(db, `stories/${auth.currentUser.uid}`);
   const [open, setOpen] = useState(false);
 
   //Get all the stories

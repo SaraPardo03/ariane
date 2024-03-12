@@ -1,5 +1,6 @@
 import { ref, set, onValue, push, serverTimestamp} from "firebase/database";
 import { db } from '../configs/firebaseConfig';
+import {getAuth } from 'firebase/auth';
 import { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 import Page from "../models/Page";
@@ -11,8 +12,9 @@ import PagesFooterMainNav from "../components/pages/PagesFooterMainNav.jsx";
 import StoryMap from "../components/StoryMap.jsx";
 
 export function PagesPage() {
+  const auth = getAuth();
   const params = useParams();
-  const pagesRef =ref(db, 'pages/' + params.id);
+  const pagesRef =ref(db, `pages/${auth.currentUser.uid}/${params.id}`);
   const [pages, setPages] = useState([]);
   const [currentePageId, setCurrentePageId] = useState(null);
  
@@ -56,7 +58,7 @@ console.log("PagesPage");
 
     // Add choice to current page with new page id as link
     choice.sendToPageId = newPageId;
-    const choicesRef = ref(db, 'choices/' + choice.pageId);
+    const choicesRef = ref(db, `choices/${auth.currentUser.uid}/${choice.pageId}`);
     push(choicesRef, new Choice(choice));
   };
 

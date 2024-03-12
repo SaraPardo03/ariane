@@ -1,5 +1,6 @@
 import { ref, push, set, remove, update, get, child} from 'firebase/database';
 import { db } from '../configs/firebaseConfig';
+import {getAuth } from 'firebase/auth';
 
 class Story {
   constructor(data) {
@@ -16,7 +17,8 @@ class Story {
 
   static async getTitleById(storyId) {
     try {
-      const storyRef = ref(db, `stories/${storyId}`);
+      const auth = getAuth();
+      const storyRef = ref(db, `stories/${auth.currentUser.uid}/${storyId}`);
       const snapshot = await get(storyRef);
       
       if (snapshot.exists()) {
@@ -32,7 +34,8 @@ class Story {
   }
 
   static async getAllPagesFromStory(storyId) {
-    const pagesRef = ref(db, `pages/${storyId}`);
+    const auth = getAuth();
+    const pagesRef = ref(db, `pages/${auth.currentUser.uid}/${storyId}`);
     try {
       const snapshot = await get(pagesRef);
       
@@ -51,6 +54,7 @@ class Story {
   }
 
   static async updateStats(storyId) {
+    const auth = getAuth();
     const pages = await Story.getAllPagesFromStory(storyId);
 
     let totalCharacters = 0;
@@ -65,7 +69,7 @@ class Story {
       //if (!page.end && Object.keys(page.choices).length > 0) totalOpenNode++;
     });
 
-    const storyRef = ref(db, `stories/${storyId}`);
+    const storyRef = ref(db, `stories/${auth.currentUser.uid}/${storyId}`);
     await update(storyRef, {
       totalCharacters: totalCharacters,
       totalEnd: totalEnd,
@@ -76,6 +80,7 @@ class Story {
 
   // Method to save a new story to the database
   async save() {
+    const auth = getAuth();
     const storyData = {
       createdAt: this.createdAt,
       updatedAt: this.updatedAt,
@@ -89,10 +94,10 @@ class Story {
     };
 
     if (this.id) {
-      await set(ref(db, `stories/${this.id}`), storyData);
+      await set(ref(db, `stories/${auth.currentUser.uid}/${this.id}`), storyData);
       return this.id;
     } else {
-      const newStoryRef = push(ref(db, 'stories/'));
+      const newStoryRef = push(ref(db, `stories/${auth.currentUser.uid}`));
       await set(newStoryRef, storyData);
       return newStoryRef.key;
     }
@@ -100,28 +105,32 @@ class Story {
 
   // Method to update a story in the database
   async update() {
+    const auth = getAuth();
     if (!this.id) throw new Error('Cannot update story without an ID');
-    const storyRef = ref(db, `stories/${this.id}`);
+    const storyRef = ref(db, `stories/${auth.currentUser.uid}/${this.id}`);
     await set(storyRef, this);
   }
 
   // Method to delete a story from the database
   async delete() {
+    const auth = getAuth();
     if (!this.id) throw new Error('Cannot delete story without an ID');
-    const storyRef = ref(db, `stories/${this.id}`);
+    const storyRef = ref(db, `stories/${auth.currentUser.uid}/${this.id}`);
     await remove(storyRef);
   }
   
   // Method to delete all pages from a story
   async deleteAllPagesFromStory() {
+    const auth = getAuth();
     if (!this.id) throw new Error('Cannot delete pages from story without an ID');
-    const pageRef = ref(db, `pages/${this.id}`);
+    const pageRef = ref(db, `pages/${auth.currentUser.uid}/${this.id}`);
     await remove(pageRef);
   }
 
   async deleteAllChoicesFromStory() {
+    const auth = getAuth();
     if (!this.id) throw new Error('Cannot delete pages from story without an ID');
-    const pageRef = ref(db, `choices/${this.id}`);
+    const pageRef = ref(db, `choices/${auth.currentUser.uid}/${this.id}`);
     await remove(pageRef);
   }
 }

@@ -1,5 +1,6 @@
 import { ref, push, set, remove } from 'firebase/database';
 import { db } from '../configs/firebaseConfig';
+import {getAuth } from 'firebase/auth';
 
 class Choice {
   constructor(data) {
@@ -10,6 +11,7 @@ class Choice {
 
   // Method to save a new choice to the database
   async save(choiceId) {
+    const auth = getAuth();
     const choiceData = {
         pageId: this.pageId,
         title: this.title,
@@ -17,9 +19,9 @@ class Choice {
     };
 
     console.log("save", choiceData);
-    const choicesRef = ref(db, `choices/${this.pageId}`);
+    const choicesRef = ref(db, `choices/${auth.currentUser.uid}/${this.pageId}`);
     if (choiceId) {
-        const choiceRef = ref(db, `choices/${this.pageId}/${choiceId}`);
+        const choiceRef = ref(db, `choices/${auth.currentUser.uid}/${this.pageId}/${choiceId}`);
         await set(choiceRef, choiceData);
         return choiceId;
     } else {
@@ -31,15 +33,17 @@ class Choice {
 
   // Method to update a choice in the database
   async update(choiceId) {
+    const auth = getAuth();
     if (!choiceId) throw new Error('Cannot update choice without an ID');
-    const choiceRef = ref(db, `choices/${this.pageId}/${choiceId}`);
+    const choiceRef = ref(db, `choices/${auth.currentUser.uid}/${this.pageId}/${choiceId}`);
     await set(choiceRef, this);
   }
 
   // Method to delete a choice from the database
   async delete(choiceId) {
+    const auth = getAuth();
     if (!choiceId) throw new Error('Cannot delete choice without an ID');
-    const choiceRef = ref(db, `choices/${this.pageId}/${choiceId}`);
+    const choiceRef = ref(db, `choices/${auth.currentUser.uid}/${this.pageId}/${choiceId}`);
     await remove(choiceRef);
   }
 }

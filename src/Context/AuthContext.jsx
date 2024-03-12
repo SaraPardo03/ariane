@@ -9,15 +9,21 @@ export function AuthContext({children}){
  const [loading,setLoading] = useState(true)
 
  useEffect(() => {
-    let unsubscribe;
-    unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-        setLoading(false)
-        if(currentUser) setUser(currentUser)
-        else{setUser(null)}
-    });
-    return () => {
-        if(unsubscribe) unsubscribe();
-    }
+   let unsubscribe;
+   unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setLoading(false)
+      if(currentUser){ 
+         setUser(currentUser);
+      }
+      else{
+         setUser(null)
+      }
+   });
+   return () => {
+      if(unsubscribe){
+         unsubscribe();
+      }
+   }
  },[]);
  
  const values = {
