@@ -14,6 +14,25 @@ $pageListeHeight: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow)
 }
 
 /* ##############################################################
+                    SIGNUPPAGE  COMPOMENTS 
+##################################################################*/
+.signup-container{
+    height: 100dvh;
+}
+
+.signup-form-container{
+    height: 100dvh;
+}
+
+.divider:after,
+.divider:before {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #eee;
+}
+
+/* ##############################################################
                     STORIESPAGE COMPOMENTS 
 ##################################################################*/
 // STORY CARD

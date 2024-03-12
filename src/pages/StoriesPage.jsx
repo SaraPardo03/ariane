@@ -1,6 +1,6 @@
 import { ref, set, onValue, push, serverTimestamp} from "firebase/database";
-import { db } from '../configs/firebaseConfig'
-import { useRef, useEffect, useState} from "react"
+import { db } from '../configs/firebaseConfig';
+import { useRef, useEffect, useState} from "react";
 import { useParams } from "react-router-dom";
 import Story from '../models/Story';
 import Stories from "../components/stories/Stories.jsx";
