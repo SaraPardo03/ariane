@@ -15,9 +15,6 @@ function PagesMainNav({storyId}) {
     fetchStoryTitle();
   }, [storyId]);
 
-	//const storyName = getStoryName();
-
-	console.log("toto");
 	const handleClickGoToHome = e => {
 		navigate(`/`);
 	}

@@ -5,7 +5,6 @@ import interact from 'interactjs';
 
 
 function StoryMap({pages, currentePageId, setCurrentePageId}) {
-	const [mapCurrentePageId, setMapCurrentePageId] = useState(currentePageId);
 	const storyMapContainer = useRef(null);
 	const canvas = useRef(null);
 	const paper = useRef(null);
@@ -30,6 +29,7 @@ function StoryMap({pages, currentePageId, setCurrentePageId}) {
 
 	useEffect(() => {
 		// Initialize the graph and paper
+		const canvasElement = canvas.current;
 		const graph = new dia.Graph({}, { cellNamespace: shapes });
 		const paperInstance = new dia.Paper({
       el: document.querySelector("#canvas"),
@@ -56,11 +56,10 @@ function StoryMap({pages, currentePageId, setCurrentePageId}) {
     paperInstance.on('element:pointerdblclick', function(elementView) {
 		  let element = elementView.model;
   		let elementId = element.attr('id');
-  		setMapCurrentePageId(elementId);
   		setCurrentePageId(elementId);
 		});
     // Event handler for the scroll ans the map for zoom in and out 
-    canvas.current.addEventListener('wheel', handleWheel, { passive: false });
+    canvasElement.addEventListener('wheel', handleWheel, { passive: false });
 
     //Event handler for the pinch and pan for the map
     interact(canvas.current).gesturable({
@@ -108,7 +107,7 @@ function StoryMap({pages, currentePageId, setCurrentePageId}) {
     	}
     	if(page.id === currentePageId){
     		currentPageColor = "rgba(0, 123, 255, 0.5)";
-    		currentPageWidth = 4
+    		currentPageWidth = 5
     	}
 	    let rect = new shapes.standard.Rectangle();
 	    rect.position(x, y + 100);
@@ -219,10 +218,17 @@ function StoryMap({pages, currentePageId, setCurrentePageId}) {
 	    let firstPageElement = new shapes.standard.Rectangle();
 	    firstPageElement.position(paperInstance.options.width / 2 - 50, 10);
 	    firstPageElement.resize(100, 40);
+    	let currentPageColor = "black";
+    	let currentPageWidth = 2
+    	if(firstPages[0].id === currentePageId || currentePageId == null){
+    		currentPageColor = "rgba(0, 123, 255, 0.5)";
+    		currentPageWidth = 5
+    	}
 	    firstPageElement.attr({
 	      body: {
 	        fill: "rgba(0, 123, 255, 0.5)",
-	        strokeWidth: 0.5
+	        stroke:currentPageColor,
+	        strokeWidth: currentPageWidth
 	      },
 	      label: {
 	        text: firstPages[0].title,
@@ -234,12 +240,13 @@ function StoryMap({pages, currentePageId, setCurrentePageId}) {
 	    firstPageElement.addTo(graph);
 
 	    drawNextRow(firstPages, paperInstance.options.width / 2 - 50, 10, 10);
+
 	  }
     return () => {
       paperInstance.remove();
-      canvas.current.removeEventListener('wheel', handleWheel);
+      canvasElement.removeEventListener('wheel', handleWheel);
     };
-  }, [pages, zoomLevel, directionXY, mapCurrentePageId]);
+  }, [pages, zoomLevel, directionXY, currentePageId]);
 
 	return	<div className="col story-map" ref={storyMapContainer}>
     	<div className="canvas story-map-canvas" ref={canvas}></div>

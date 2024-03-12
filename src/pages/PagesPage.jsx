@@ -30,7 +30,6 @@ export function PagesPage() {
       //onlyOnce: true
     });
   }, []);
-console.log("PagesPage");
 
   const addNewPageToBDD = async (page) => {
     const newPage = new Page(page);
@@ -81,7 +80,7 @@ console.log("PagesPage");
         setCurrentePageId={setCurrentePageId} 
       />
       <div className="col d-none d-xl-block">
-        <StoryMap currentePageId={currentePageId} pages={pages} setCurrentePageId={setCurrentePageId}/>
+        <StoryMap pages={pages} currentePageId={currentePageId}  setCurrentePageId={setCurrentePageId}/>
       </div>
     </div>
     <PagesFooterMainNav/>  
