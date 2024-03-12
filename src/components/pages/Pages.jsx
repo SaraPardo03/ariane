@@ -1,6 +1,7 @@
 import { ref, set, onValue, push, serverTimestamp} from "firebase/database";
 import { useState, useEffect, useRef, useMemo} from "react";
 import { db } from '../../configs/firebaseConfig';
+import {getAuth } from 'firebase/auth';
 import Page from "../../models/Page";
 import PageEditModal from './PageEditModal';
 import ChoiceEditModal from './ChoiceEditModal';
@@ -30,9 +31,10 @@ function Pages({storyId, pages, addNewPageToBDD, updatePageToBDD, addNewChoiceTo
 }
 
 export function PageCard({storyId, page, addNewPageToBDD, updatePageToBDD, addNewChoiceToBDD, setCurrentePageId}){
+	const auth = getAuth();
 	const [choices, setChoices] = useState([]);
-	const pageRef = ref(db, `pages/${storyId}/${page.id}`);
-  const choicesRef = ref(db, `choices/${page.id}`);
+	const pageRef = ref(db, `pages/${auth.currentUser.uid}/${storyId}/${page.id}`);
+  const choicesRef = ref(db, `choices/${auth.currentUser.uid}/${page.id}`);
 
   useEffect(() => {
     onValue(choicesRef, (snapshot) => {

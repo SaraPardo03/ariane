@@ -6,6 +6,7 @@ import Form from 'react-bootstrap/Form';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 
 export function SignupPage() {
+  const [error,setError] = useState();
   const [email,setEmail] = useState('');
   const [password,setPassword] = useState('');
   const [isSignUp, setIsSignUp] = useState(false); 
@@ -37,7 +38,7 @@ export function SignupPage() {
           navigate('/');
         })
         .catch((error) => {
-          console.log(error);
+          console.log(print(error));
         });
     }
   }
@@ -51,6 +52,7 @@ export function SignupPage() {
         navigate('/');
       })
       .catch((error) => {
+        setError(JSON.stringify(error.code));
         console.log(error);
       });
   }
@@ -116,6 +118,7 @@ export function SignupPage() {
               size="md">
                 {isSignUp ? "SIGN UP" : "SIGN IN"}
               </Button>
+              
             </div>
           </fieldset>
         </Form>
@@ -127,6 +130,9 @@ export function SignupPage() {
             <i className="fs-6 bi bi-google me-2"></i>
             <span className="fs-6">{isSignUp ? "SIGN UP" : "SIGN IN"} WITH GOOGLE</span>
           </Button>
+          <Form.Text id="googleHelpBlock" muted>
+            {error}
+          </Form.Text>
         </div>
         <div className="text-center">
           <p>

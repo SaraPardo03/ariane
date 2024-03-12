@@ -37,7 +37,7 @@ $pageListeHeight: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow)
 ##################################################################*/
 // STORY CARD
 .story-card-container{
-    min-height: calc(100dvh - $mainNavHeight);
+    //min-height: calc(100dvh - $mainNavHeight);
     max-height: calc(100dvh - $mainNavHeight);
 }
 .story-card{

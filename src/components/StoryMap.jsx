@@ -1,5 +1,6 @@
 import { dia, shapes } from "@joint/core";
 import { useEffect, useRef, useState } from "react";
+import interact from 'interactjs';
 
 
 
@@ -9,6 +10,7 @@ function StoryMap({pages, currentePageId, setCurrentePageId}) {
 	const canvas = useRef(null);
 	const paper = useRef(null);
 	const [zoomLevel, setZoomLevel] = useState(1);
+  const [initialDistance, setInitialDistance] = useState(0);
 	const [directionXY, setDirectionXY] = useState([0, 0]);
 
 	const handleZoomIn = () => {
@@ -19,34 +21,17 @@ function StoryMap({pages, currentePageId, setCurrentePageId}) {
       setZoomLevel(Math.max(0.1, zoomLevel - 0.1));
   };
 
-  const handleMove = (direction) => {
-	  const step = 50; // Adjust step size as needed
-	  let dx = 0, dy = 0;
-	  switch (direction) {
-	      case 'up':
-	          dy = -step;
-	          break;
-	      case 'down':
-	          dy = step;
-	          break;
-	      case 'left':
-	          dx = -step;
-	          break;
-	      case 'right':
-	          dx = step;
-	          break;
-	      default:
-	          break;
-	  }
-	  dx += directionXY[0];
-	  dy += directionXY[1]
-	  setDirectionXY([dx, dy]);	  
+  const handleWheel = (event) => {
+    event.preventDefault();
+    const delta = event.deltaY * -0.005; // speed zoom
+    const newZoomLevel = Math.max(0.1, zoomLevel * (1 + delta));
+    setZoomLevel(newZoomLevel);
+  };
 
-	}
 	useEffect(() => {
 		// Initialize the graph and paper
 		const graph = new dia.Graph({}, { cellNamespace: shapes });
-		const paper = new dia.Paper({
+		const paperInstance = new dia.Paper({
       el: document.querySelector("#canvas"),
       model: graph,
       width: storyMapContainer.current.offsetWidth,
@@ -61,17 +46,47 @@ function StoryMap({pages, currentePageId, setCurrentePageId}) {
           color: 'rgb(240, 241, 242)'
       },
     });
+
+    paperInstance.scale(zoomLevel, zoomLevel);
+    paperInstance.translate(directionXY[0] , directionXY[1]);
+    canvas.current.appendChild(paperInstance.el);
+    paper.current = paperInstance;
+
     // Event handler for double click on elements
-    paper.on('element:pointerdblclick', function(elementView) {
+    paperInstance.on('element:pointerdblclick', function(elementView) {
 		  let element = elementView.model;
   		let elementId = element.attr('id');
   		setMapCurrentePageId(elementId);
   		setCurrentePageId(elementId);
 		});
+    // Event handler for the scroll ans the map for zoom in and out 
+    canvas.current.addEventListener('wheel', handleWheel, { passive: false });
 
-    paper.scale(zoomLevel, zoomLevel);
-    paper.translate(directionXY[0] , directionXY[1]);
-    canvas.current.appendChild(paper.el);
+    //Event handler for the pinch and pan for the map
+    interact(canvas.current).gesturable({
+      onstart: (event) => {
+        event.preventDefault();
+        setInitialDistance(event.distance);
+      },
+      onmove: (event) => {
+        const { distance } = event;
+        const delta = distance - initialDistance;
+        const zoomSpeed = 0.0008; // speed of zoom
+        const newZoomLevel = Math.max(0.1, zoomLevel * (1 + delta * zoomSpeed));
+        setZoomLevel(newZoomLevel);
+
+        // move the canva
+        const dx = event.dx / zoomLevel;
+        const dy = event.dy / zoomLevel;
+        setDirectionXY([directionXY[0] + dx, directionXY[1] + dy]);
+      }
+    }).draggable({
+      onmove: (event) => {
+        //move the canva
+        const { dx, dy } = event;
+        setDirectionXY([directionXY[0] + dx, directionXY[1] + dy]);
+      }
+    });
 
    /**
 		 * Draws a page element on the canvas.
@@ -202,7 +217,7 @@ function StoryMap({pages, currentePageId, setCurrentePageId}) {
     //const firstPage = pages.find(page => page.first);
 	  if (firstPages.length > 0) {
 	    let firstPageElement = new shapes.standard.Rectangle();
-	    firstPageElement.position(paper.options.width / 2 - 50, 10);
+	    firstPageElement.position(paperInstance.options.width / 2 - 50, 10);
 	    firstPageElement.resize(100, 40);
 	    firstPageElement.attr({
 	      body: {
@@ -218,23 +233,20 @@ function StoryMap({pages, currentePageId, setCurrentePageId}) {
 	    firstPageElement.attr('id', firstPages[0].id);
 	    firstPageElement.addTo(graph);
 
-	    drawNextRow(firstPages, paper.options.width / 2 - 50, 10, 10);
+	    drawNextRow(firstPages, paperInstance.options.width / 2 - 50, 10, 10);
 	  }
     return () => {
-      paper.remove();
+      paperInstance.remove();
+      canvas.current.removeEventListener('wheel', handleWheel);
     };
   }, [pages, zoomLevel, directionXY, mapCurrentePageId]);
 
 	return	<div className="col story-map" ref={storyMapContainer}>
     	<div className="canvas story-map-canvas" ref={canvas}></div>
     	<div>
-    		<div className="buttons-container"> 
+    		<div className="d-none buttons-container"> 
             <button className="btn btn-sm btn-secondary" onClick={handleZoomIn}><i className="bi bi-zoom-in"></i></button>
             <button className="btn btn-sm btn-secondary" onClick={handleZoomOut}><i className="bi bi-zoom-out"></i></button>
-            <button className="btn btn-sm btn-secondary" onClick={() => handleMove('up')}><i className="bi bi-arrow-up"></i></button>
-            <button className="btn btn-sm btn-secondary" onClick={() => handleMove('down')}><i className="bi bi-arrow-down"></i></button>
-            <button className="btn btn-sm btn-secondary" onClick={() => handleMove('left')}><i className="bi bi-arrow-left"></i></button>
-            <button className="btn btn-sm btn-secondary" onClick={() => handleMove('right')}><i className="bi bi-arrow-right"></i></button>
         </div>
       </div>
     </div>
