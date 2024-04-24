@@ -1,3 +1,57 @@
+/* -----------------------------------------------------------
+    THEME
+------------------------------------------------------------*/
+$white: #ffffff;
+
+$theme-colors: (
+    "light":      #FFFFFF,
+    "dark":       #232428,
+    "primary":    #FFBF00,
+    "textOnPrimary":#000,
+    "secondary":  #317AC1,
+    "info":       #17A2B8,
+    "accent1":    #c0292f,
+    "accent2":    #d9484d,
+    "accent3":    #dc9ea9,
+    "success":    #28A745,
+    "warning":    #FFC107,
+    "danger":     #E65748,
+    "corder":     #DEE2E6,
+    "container":  #404249,
+    "textOnContainer":#fff,
+    "primaryNav": #232428,
+    "textOnPrimaryNav":#fff,
+    "secondaryNav": #2B2D31,
+    "textOnSecondaryNav":#fff,    
+);
+
+@import 'node_modules/bootstrap/scss/bootstrap';
+
+// BACKGROUD COLOR
+.bg-container{
+    background-color:map-get($theme-colors, "container");
+}
+.bg-primaryNav{
+    background-color: map-get($theme-colors, "primaryNav");
+}
+.bg-secondaryNav{
+    background-color: map-get($theme-colors, "primaryNav");
+}
+
+// TEXT COLOR 
+.text-on-primary{
+    color: map-get($theme-colors, "textOnPrimary")
+}
+.text-on-secondaryNav{
+    color: map-get($theme-colors, "");
+}
+.text-on-container{
+    color: map-get($theme-colors, "textOnContainer")
+}
+
+/* -----------------------------------------------------------
+    MAIN
+------------------------------------------------------------*/
 $mainNavHeight: 110px;
 $cardPagePadding:0px;
 $cardPagePaddingFirstAndLast: 5px;
@@ -10,14 +64,15 @@ $pageListeHeight: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow)
   background-color: rgba(0, 0, 0, 0);
 }
 
+.fill { 
+    min-height: 100%;
+    height: 100%;
+}
+
 /* ##############################################################
                     SIGNUPPAGE  COMPOMENTS 
 ##################################################################*/
-.signup-container{
-    height: 100dvh;
-}
-
-.signup-form-container{
+.signup-page-container{
     height: 100dvh;
 }
 

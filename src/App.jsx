@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { RouterProvider, createBrowserRouter, Outlet, Navigate} from 'react-router-dom';
 import { AuthContext } from './Context/AuthContext';
+import { ThemeProvider } from './Context/ThemeContext';
 import { Protected } from './pages/Protected';
 import { ErrorPage } from './pages/ErrorPage';
 import { SignupPage } from './pages/SignupPage';
@@ -79,7 +80,10 @@ function LoginPage() {
 
 function App() {
   return <AuthContext>
-    <RouterProvider router={router} />
+      <ThemeProvider>
+        <RouterProvider router={router} />
+      </ThemeProvider>
   </AuthContext>
+    
 }
 export default App
