@@ -17,7 +17,7 @@ function StoriesFooterMainNav(props) {
 
 	return <nav className="stories-footer-container d-md-none">
 		<Button className="rounded-circle position-fixed bottom-0 end-0 m-4"  variant="primary" onClick={handleClickNewStory}>
-	        <i className="fs-1 bi bi-plus"></i>
+	        <i className="fs-1 bi bi-plus text-on-primary"></i>
 	  </Button>
 	</nav>;
 }

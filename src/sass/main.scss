@@ -1,245 +1,398 @@
-$mainNavHeight: 110px;
+
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/variables";
+@import "node_modules/bootstrap/scss/mixins";
+// Définir les couleurs pour chaque thème
+$theme-colors-light: (
+    "light":            #FFFFFF,
+    "dark":             #232428,
+    "primary":          #FFBF00,
+    "textOnPrimary":    #000,
+    "secondary":        #317AC1,
+    "info":             #17A2B8,
+    "success":          #28A745,
+    "warning":          #FFC107,
+    "danger":           #E65748,
+    "border":           #DEE2E6,
+    "container":        #F5F5F5,       // Couleur de fond claire pour le container
+    "accent1":          #c0292f,
+    "accent2":          #d9484d,
+    "accent3":          #dc9ea9,
+    "textOnContainer":  #232428,       // Texte foncé pour contraster avec la couleur claire du container
+    "primaryNav":       #FFFFFF,       // Couleur de fond pour la barre de navigation principale (light)
+    "textOnPrimaryNav": #232428,       // Texte foncé pour contraster avec la couleur claire de la barre de navigation principale
+    "secondaryNav":     #E9ECEF,       // Couleur de fond pour la barre de navigation secondaire
+    "textOnSecondaryNav": #232428      // Texte foncé pour contraster avec la couleur claire de la barre de navigation secondaire
+);
+
+$theme-colors-concentration: (
+    "light":      #FFFFFF,
+    "dark":       #232428,
+    "primary":    #FFBF00,
+    "textOnPrimary":#000,
+    "secondary":  #317AC1,
+    "info":       #17A2B8,
+    "success":    #28A745,
+    "warning":    #FFC107,
+    "danger":     #E65748,
+    "border":     #DEE2E6,
+    "container":  #404249,
+    "accent1":    #c0292f,
+    "accent2":    #d9484d,
+    "accent3":    #dc9ea9,
+    "textOnContainer":#fff,
+    "primaryNav": #232428,
+    "textOnPrimaryNav":#fff,
+    "secondaryNav": #2B2D31,
+    "textOnSecondaryNav":#fff,    
+);
+
+/* -----------------------------------------------------------
+    MAIN VARIABLES
+------------------------------------------------------------*/
+$mainNavHeight: 56px;
+$pageMainNav: 50px;
+
+
 $cardPagePadding:0px;
 $cardPagePaddingFirstAndLast: 5px;
 $pagesListFollowingToShow: calc(20px + 2*$cardPagePadding);
 $pageListeHeight: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow));
 
-#pages-footer-main-nav a.active {
-  color: $primary;
-  border: 2px solid red;
-  background-color: rgba(0, 0, 0, 0);
+
+/* -----------------------------------------------------------
+    FONTS
+------------------------------------------------------------*/
+/* Courier Prime Regular */
+@font-face {
+    font-family: 'Courier Prime';
+    src: url('../assets/fonts/CourierPrime-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
 }
 
-/* ##############################################################
-                    SIGNUPPAGE  COMPOMENTS 
-##################################################################*/
-.signup-container{
-    height: 100dvh;
+/* Courier Prime Bold */
+@font-face {
+    font-family: 'Courier Prime';
+    src: url('../assets/fonts/CourierPrime-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
 }
 
-.signup-form-container{
-    height: 100dvh;
+/* Courier Prime Italic */
+@font-face {
+    font-family: 'Courier Prime';
+    src: url('../assets/fonts/CourierPrime-Italic.ttf') format('truetype');
+    font-weight: normal;
+    font-style: italic;
 }
 
-.divider:after,
-.divider:before {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: #eee;
+/* Courier Prime Bold Italic */
+@font-face {
+    font-family: 'Courier Prime';
+    src: url('../assets/fonts/CourierPrime-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
 }
 
-/* ##############################################################
-                    STORIESPAGE COMPOMENTS 
-##################################################################*/
-// STORY CARD
-.story-card-container{
-    //min-height: calc(100dvh - $mainNavHeight);
-    max-height: calc(100dvh - $mainNavHeight);
-}
-.story-card{
-    height: 100%;
+
+// Mixin pour appliquer les couleurs du thème
+@mixin theme-colors($theme-colors) {
+    .fill { 
+        min-height: 100%;
+        height: 100%;
+    }
+    body{
+        background-color: map-get($theme-colors, "container");
+    }
+    // BACKGROUD COLOR
+    .bg-container{
+        background-color:map-get($theme-colors, "container");
+    }
+    .bg-primary-nav{
+        background-color: map-get($theme-colors, "primaryNav");
+    }
+    .bg-secondary-nav{
+        background-color: map-get($theme-colors, "secondaryNav");
+    }
+    // BG GRAY
+    .bg-gray-100{
+        background-color: $gray-100;
+    }
+    .bg-gray-200{
+        background-color: $gray-200;
+    }
+    .bg-gray-300{
+        background-color: $gray-300;
+    }
+    .bg-gray-400{
+        background-color: $gray-400;
+    }
+    .bg-gray-500{
+        background-color: $gray-500;
+    }
+    .bg-gray-600{
+        background-color: $gray-600;
+    }
+    .bg-gray-700{
+        background-color: $gray-700;
+    }
+    .bg-gray-800{
+        background-color: $gray-800;
+    }
+    .bg-gray-900{
+        background-color: $gray-900;
+    }
+
+    // TEXT COLOR 
+    .text-on-primary{
+        color: map-get($theme-colors, "textOnPrimary")
+    }
+    .text-on-primary-nav{
+        color: map-get($theme-colors, "textOnPrimaryNav");
+    }
+    .text-on-secondary-nav{
+        color: map-get($theme-colors, "textOnSecondaryNav");
+    }
+    .text-on-container{
+        color: map-get($theme-colors, "textOnContainer")
+    }
+
+    //BUTTONS
+    .btn-primary {
+        background-color: map-get($theme-colors, "primary");
+        border-color: map-get($theme-colors, "primary");
+        color: map-get($theme-colors, "textOnPrimary");
+    }
+    .btn-danger{
+        color: white;
+    }
+    .btn-danger:hover{
+        color:white;
+    }
+    .btn-secondary{
+        color: white;
+    }
+    .btn-secondary:hover{
+        color: white;
+    }
+    .btn-primaryNav{
+        color: map-get($theme-colors, "textOnPrimaryNav");
+        background-color: transparent;
+    }
+    .btn-primaryNav:hover{
+        color: map-get($theme-colors, "primaryNav");
+        background-color: $gray-400;
+    }
+    .btn-gray-500{
+        background-color: $gray-500;
+    }
+    .btn-gray-500:hover{
+        background-color: $gray-700;
+    }
+
+    // SWITCH
+
+    .form-check-input {
+        background-color: $gray-300;
+        border-color: $gray-300;
+    }
+    .form-check-input:checked {
+        background-color: map-get($theme-colors, "primary");
+        border-color: map-get($theme-colors, "primary");
+    }
+    .form-check-input:focus{
+        box-shadow: none;
+    }
+    /*
+    .form-check-input {
+        background-color: map-get($theme-colors, "light");
+        border-color: map-get($theme-colors, "light");
+    }
+    .form-check-input:checked {
+        background-color: map-get($theme-colors, "primary");
+        border-color: map-get($theme-colors, "primary");
+    }
+    .form-check-input:focus{
+        box-shadow: none;
+    }*/
+
+    
+
+    /* ##############################################################
+        NAVBAR
+    ###############################################################*/
+    .navbar-primary{
+        min-height: 56px;
+    }
+    .navbar-primary a.nav-link{
+        color: map-get($theme-colors, "textOnPrimaryNav");
+    }
+    .navbar-primary a.nav-link:hover{
+        color: map-get($theme-colors, "primary");
+    }
+    .navbar-primary a.nav-link.active{
+        color: map-get($theme-colors, "primary");
+    }
+    .navbar-primary a.nav-link.disabled{
+        color: $gray-500
+    }
+
+    .navbar-secondary{
+        min-height: 50px;
+        color: map-get($theme-colors, "textOnContainer");
+    }
+
+    // nav mobile
+    .navbar-primary-mobile{
+        min-height: 59px;
+    }
+    .navbar-primary-mobile li.nav-item{
+        border-top: 5px solid map-get($theme-colors, "primaryNav");
+        padding-top: 4px;
+    }
+    .navbar-primary-mobile li.nav-item.active{
+        border-top: 5px solid map-get($theme-colors, "primary");
+    }
+    .navbar-primary-mobile li.nav-item:hover{
+        border-top: 5px solid map-get($theme-colors, "primary");
+    }
+    .navbar-primary-mobile li{
+        color: map-get($theme-colors, "textOnPrimaryNav");
+    }
+    .navbar-primary-mobile li.active{
+        color: map-get($theme-colors, "primary");
+    }
+    .navbar-primary-mobile li:hover{
+        color: map-get($theme-colors, "primary");
+    }
+    .navbar-primary-mobile li a.nav-link{
+        font-size: 11pt;
+        color: map-get($theme-colors, "textOnPrimaryNav");
+    }
+    .navbar-nav .nav-link.active{
+        color: map-get($theme-colors, "primary");
+    }
+    .navbar-primary-mobile li.active a.nav-link{
+        color: map-get($theme-colors, "primary");
+    }
+    .navbar-primary-mobile li:hover a.nav-link{
+        color: map-get($theme-colors, "primary");
+    }
+
+    /* ##############################################################
+                        SIGNUPPAGE  COMPOMENTS 
+    ##################################################################*/
+    .signup-page-container{
+        height: 100dvh;
+    }
+
+    .divider:after,
+    .divider:before {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #eee;
+    }
+
+    /* ##############################################################
+                        STORIESPAGE COMPOMENTS 
+    ##################################################################*/
+    // STORY CARD
+    .stories-container{
+        min-height: calc(100dvh - $mainNavHeight);
+    }
+    .story-card-top img{
+        height: 100%;
+        width: auto;
+        max-height: 300px;
+    }   
+
+    // STORY EDIT MODAL
+    .story-editModal{
+    min-height: 100%; 
+    max-height: 100%;
     overflow: auto;
     scrollbar-width: thin;
+    }
+
+    /* ##############################################################
+                        PAGES COMPOMENTS 
+    ##################################################################*/
+    .current-page-container{
+        min-height: calc(100dvh - ($mainNavHeight + $pageMainNav));
+    }
+
+    .current-page-card{
+        max-height: calc(100dvh - ($mainNavHeight + $pageMainNav + 20px));
+    }
+    .current-page-card-body{
+        max-height: calc(100dvh - ($mainNavHeight + $pageMainNav + 40px));
+        overflow: auto;
+
+        scrollbar-width: thin;
+        scrollbar-color: #888 transparent; 
+    }
+
+    .text-courier{
+        font-family: 'Courier Prime', monospace;
+    }
+
+    /* ##############################################################
+                        MAP COMPONENT
+    ##################################################################*/
+    .story-map {
+        min-height: calc(100dvh - calc($mainNavHeight));
+        width: 100%;
+        overflow: auto;
+    }
+
+    .buttons-container {
+    position: absolute;
+    bottom: 80px;
+    right: 80px;
+    }
+
+    .buttons-container button {
+    margin-left: 5px; /* Ajouter une marge entre les boutons */
+    }
+
+    /* ##############################################################
+                    MEDIA QUERY
+    ##################################################################*/
+
+    // X-Small devices (portrait phones, less than 576px)
+    // No media query for `xs` since this is the default in Bootstrap
+
+    //SM Small devices (landscape phones, 576px and up)
+    @media (min-width: 576px) {
+    }
+
+    //MD  Medium devices (tablets, 768px and up)
+    @media (min-width: 768px) {
+
+    }
+
+    //LG Large devices (desktops, 992px and up)
+    @media (min-width: 992px) {
+    }
+
+    //XL X-Large devices (large desktops, 1200px and up)
+    @media (min-width: 1200px) {}
+
+    //XXL XX-Large devices (larger desktops, 1400px and up)
+    @media (min-width: 1400px) {}
 }
 
-.stories-footer-container{
-    margin-top:100px;
+// Appliquer les styles en fonction de la classe sur <html>
+html.light {
+    @include theme-colors($theme-colors-light);
 }
 
-
-// STORY EDIT MODAL
-.story-editModal{
-   min-height: 100%; 
-   max-height: 100%;
-   overflow: auto;
-   scrollbar-width: thin;
+html.concentration {
+    @include theme-colors($theme-colors-concentration);
 }
 
-.story-summary{
-    height: calc(100dvh - 300px);
- }
+// Importer Bootstrap avec les variables et mixins nécessaires
+@import 'node_modules/bootstrap/scss/bootstrap';
 
-
-/* ##############################################################
-                    PAGESPAGE COMPOMENTS 
-##################################################################*/
-.story-container{
-    min-height: calc(100dvh - $mainNavHeight);
-    max-height: calc(100dvh - $mainNavHeight);
-    overflow-y: auto;
-    scrollbar-width: thin;
-}
-
-.pages-list-horizontal-container{
-    overflow-x: scroll;
-    scrollbar-width: none;
-    min-height: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow));
-    max-height: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow));
-}
-
-.page-container {
-    padding: $cardPagePadding;
-    padding-right:$cardPagePaddingFirstAndLast;
-    padding-left: $cardPagePaddingFirstAndLast;
-    /*
-    min-height: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow));
-    max-height: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow)); 
-    */
-}
-.pages-list-horizontal-container div.page-container:first-child{
-    padding-left: $cardPagePadding;  
-}
-.pages-list-horizontal-container div.page-container:last-child{
-   padding-right:$cardPagePadding;
-}
-
-.card-page-container {
-    min-height: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow + 2*$cardPagePadding));
-    max-height: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow + 2*$cardPagePadding));
-    /*
-    min-height: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow));
-    max-height: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow));*/
-}
-
-.card-page{
-    max-height: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow + 2*$cardPagePadding)); 
-    //max-height: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow));
-}
-
-.page-body-container{
-    overflow-y: auto;
-    scrollbar-width: thin
-}
-
-// PAGE FOOTER NAV 
-.story-footer-button-text{
-    font-size: 0.8rem; 
-}
-
-
-// PAGE EDIT MODAL 
-.page-edit-modal{
-   height: calc(100% - 40px); 
-}
-.page-edit-modal-form{
-   height: calc(100% - 40px); 
-   scrollbar-width: thin
-}
-
-.page-edit-modal-body{
-    scrollbar-width: thin
-}
-
-
-/* ##############################################################
-                    CHOICE COMPOMENTS 
-##################################################################*/
-// PAGE EDIT MODAL 
-.choice-edit-modal{
-   height: calc(100% - 40px); 
-}
-.choice-edit-modal-form{
-   height: calc(100% - 40px); 
-   scrollbar-width: thin
-}
-
-.choice-edit-modal-body{
-    scrollbar-width: thin
-}
-
-//SCROLL SNAP VERTICAL AND HORIZONTAL
-/*
-.scrollbar-snap-y{
-    scroll-snap-type: y mandatory;
-}
-
-.scrollbar-snap-section-y{
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-}
-
-.scrollbar-snap-x{
-    scroll-snap-type: x mandatory;
-}
-
-.scrollbar-snap-section-x{
-    scroll-snap-align: center;
-    scroll-snap-stop:always;
-}*/
-
-/* ##############################################################
-                    MAP COMPONENT
-##################################################################*/
-.story-map {
-    min-height: calc(100dvh - calc($mainNavHeight + 20px ));
-    width: 100%;
-    overflow: auto;
-}
-
-.buttons-container {
-  position: absolute;
-  bottom: 80px;
-  right: 80px;
-}
-
-.buttons-container button {
-  margin-left: 5px; /* Ajouter une marge entre les boutons */
-}
-
-
-// MEDIA QUERY FOR PAGES 
-
-// X-Small devices (portrait phones, less than 576px)
-// No media query for `xs` since this is the default in Bootstrap
-
-//SM Small devices (landscape phones, 576px and up)
-@media (min-width: 576px) {
-}
-
-//MD  Medium devices (tablets, 768px and up)
-@media (min-width: 768px) {
-
-}
-
-//LG Large devices (desktops, 992px and up)
-@media (min-width: 992px) {
-}
-
-//XL X-Large devices (large desktops, 1200px and up)
-@media (min-width: 1200px) {}
-
-//XXL XX-Large devices (larger desktops, 1400px and up)
-@media (min-width: 1400px) {}
-/*  PAGES CARD */
-/*
-
-.card-page-list{
-    min-height: calc(100dvh - 100px);
-    max-height: calc(100dvh - 100px);
-}
-
-.card-page-item{
-    max-height: calc(100dvh - 120px);
-    margin: 10px;
-}
-
-.card-page{
-    overflow-y: auto;
-    scrollbar-width: thin; 
-}
-
-.scrollbar-snap-x{
-    scroll-snap-type: x mandatory;
-    //overflow-x: scroll;
-    scrollbar-width: none;
-}
-
-.scrollbar-snap-section-x
-{
-    scroll-snap-align: center;
-    scroll-snap-stop:always;
-}
-
-*/
-.cursor-pointer {cursor: pointer;}

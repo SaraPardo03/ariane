@@ -8,6 +8,8 @@ import { SignupPage } from './pages/SignupPage';
 import { PagesPage } from './pages/PagesPage';  
 import { StoriesPage } from './pages/StoriesPage';
 import { StoryMapPage } from "./pages/StoryMapPage";
+import './sass/main.scss';
+import 'bootstrap-icons/font/bootstrap-icons.scss';
 
 const router = createBrowserRouter([
   {
@@ -80,9 +82,11 @@ function LoginPage() {
 
 function App() {
   return <AuthContext>
-      <ThemeProvider>
-        <RouterProvider router={router} />
-      </ThemeProvider>
+    <ThemeProvider>
+      <RouterProvider router={router}>
+        <Outlet />
+      </RouterProvider>
+    </ThemeProvider>
   </AuthContext>
     
 }

@@ -64,11 +64,11 @@ export function StoriesPage() {
     storyToDelete.delete();
   };
   
-  return<>
+  return<div className="bg-primary">
     <StoriesMainNav stories={stories} addNewStoryToBDD={addNewStoryToBDD}/>
-    <div className="row g-0 body-container bg-secondary bg-opacity-10">
-      <Stories stories={stories} updateStoryToBDD={updateStoryToBDD} addNewStoryToBDD={addNewStoryToBDD} deleteStoryToBDD={deleteStoryToBDD} />
+    <div className="container-fluid bg-container stories-container">
+        <Stories stories={stories} updateStoryToBDD={updateStoryToBDD} addNewStoryToBDD={addNewStoryToBDD} deleteStoryToBDD={deleteStoryToBDD} />
     </div>
     <StoriesFooterMainNav stories={stories} addNewStoryToBDD={addNewStoryToBDD}/>
-  </>;
+  </div>;
 }

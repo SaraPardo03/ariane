@@ -17,6 +17,7 @@ export function PagesPage() {
   const pagesRef =ref(db, `pages/${auth.currentUser.uid}/${params.id}`);
   const [pages, setPages] = useState([]);
   const [currentePageId, setCurrentePageId] = useState(null);
+  const [showMap, setShowMap] = useState(true);
  
   //Get all the pages of the story
   useEffect(() => {
@@ -67,22 +68,26 @@ export function PagesPage() {
     await choiceToUpdate.update(choice.id);
   };
 
-  return<>
+  return <>
     <PagesMainNav storyId={params.id}/> 
-    <div className="row g-0 body-container bg-dark bg-opacity-10">
-      <Pages
-        storyId={params.id}
-        pages={pages}
-        addNewPageToBDD={addNewPageToBDD}
-        updatePageToBDD={updatePageToBDD}
-        addNewChoiceToBDD={addNewChoiceToBDD}
-        currentePageId={currentePageId}
-        setCurrentePageId={setCurrentePageId} 
-      />
-      <div className="col d-none d-xl-block">
+    <div className="row bg-primary m-0">
+      <div className={`bg-secondary border-end border-5 p-0 ${showMap ? "col-6 d-none d-xl-block" : "d-none"}`}>
         <StoryMap pages={pages} currentePageId={currentePageId}  setCurrentePageId={setCurrentePageId}/>
+      </div>
+      <div className="col p-0">
+        <Pages
+          storyId={params.id}
+          pages={pages}
+          addNewPageToBDD={addNewPageToBDD}
+          updatePageToBDD={updatePageToBDD}
+          addNewChoiceToBDD={addNewChoiceToBDD}
+          currentePageId={currentePageId}
+          setCurrentePageId={setCurrentePageId} 
+          setShowMap={setShowMap}
+          showMap={showMap}
+        />
       </div>
     </div>
     <PagesFooterMainNav/>  
-  </>;
+  </>
 }

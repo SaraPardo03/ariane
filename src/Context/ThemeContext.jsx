@@ -1,23 +1,19 @@
-// ThemeContext.js
-import React, { createContext, useContext, useState, useEffect } from 'react';
-// Créez un contexte de thème
+import React, { createContext, useContext, useState } from 'react';
 const ThemeContext = createContext();
 
-// Créez un fournisseur de thème
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState("themeConcentration");
+  const [theme, setTheme] = useState('concentration');
 
-  useEffect(() => {
-    import(`../sass/${theme}.scss`).then(() => {
-      console.log(`Loaded theme ${theme}`);
-    }).catch((error) => {
-      console.error(`Erreur ${theme}`, error);
-    });
-  }, [theme]);
-  
   const toggleTheme = () => {
-    setTheme(theme === "concentration" ? "light" : "dark");
+    const newTheme = theme === 'light' ? 'concentration' : 'light';
+    setTheme(newTheme);
+
+    document.documentElement.classList.remove(theme);
+    document.documentElement.classList.add(newTheme);
+    // Appliquer le thème sélectionné en tant qu'attribut 'data-theme' sur <html> ou <body>
+    //document.documentElement.set('data-theme', newTheme);
   };
+  document.documentElement.classList.add(theme);
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
