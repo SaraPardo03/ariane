@@ -1,5 +1,6 @@
 import { ref, set, onValue, push, serverTimestamp} from "firebase/database";
 import { useState, useEffect, useRef, useMemo} from "react";
+import Form from 'react-bootstrap/Form';
 import { db } from '../../configs/firebaseConfig';
 import {getAuth } from 'firebase/auth';
 import Page from "../../models/Page";
@@ -70,9 +71,9 @@ export function PageMainNavBar({setShowMap, showMap}){
 				<i className="text-white fs-6 bi-info-circle"></i>
 			</button>
 		</div>
-		<div className="form-check form-switch d-none d-xl-block">
-			<input className="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked={showMap} onChange={() => setShowMap(!showMap)}></input>
-			<label className=" form-check-label" htmlFor="flexSwitchCheckChecked">Carte</label>
+		<div className="form-check form-switch">
+			<input className="form-check-input d-none d-xl-block" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked={showMap} onChange={() => setShowMap(!showMap)}></input>
+			<label className=" form-check-label d-none d-xl-block" htmlFor="flexSwitchCheckChecked">Carte</label>
 		</div>
 
 	</nav>
@@ -102,7 +103,7 @@ export function PageCard({storyId, page, addNewPageToBDD, updatePageToBDD, addNe
 		<div className="card-body current-page-card-body p-2 p-sm-4">
 			<PageTags/>
 			<p className="bg-gray-400 text-courier mt-2">Nom du chapitre en cours, nom de la scéne en cours - Le text du choix</p>
-			<PageText page={page}/>
+			<PageText page={page } updatePageToBDD={updatePageToBDD}/>
 			<div className="card-body p-0">
 				<div className="bg-gray-400 text-courier mt-2 mt-sm-4 mb-2 mb-sm-4 d-flex justify-content-between">
 					<span>Choix:</span>
@@ -153,15 +154,62 @@ export function PageTags(){
 	</div>
 }
 
-export function PageText({page}){
-	const handleClickEditPage = ()=>{
-		console.log("toto");
-	}
+export function PageText({page, updatePageToBDD}){
+	const [formPage, setFormPage] = useState(page);
+	const [previousPage, setPreviousPage] = useState(page);
+	const textareaRef = useRef(null);
 
-	return <div className="card-body m-0 p-0" onClick={handleClickEditPage}>
+	useEffect(() => {
+        const isModified = formPage.title !== previousPage.title ||
+		formPage.text !== previousPage.text;
+
+        if (isModified) {
+			const updatedPage = { ...formPage};
+            updatePageToBDD(updatedPage);
+            setPreviousPage(updatedPage);
+        }
+    }, [formPage, previousPage, page]);
+
+	const handleChange = (e) => {
+		const { name, value } = e.target;
+		setFormPage((prevData) => ({
+		  ...prevData,
+		  [name]: value
+		}));
+	};
+
+	return <div className="card-body m-0 p-0">
 		<h5 className="text-courier">{page.title}</h5>
-		<div className="text-courier">{page.text}</div>
+		<Form>
+			<AutoResizingTextarea
+				value={formPage.text}
+				name="text"
+				onChange={handleChange}
+				className="mt-2 auto-resizing-textarea"
+			/>
+		</Form>
 	</div>
+}
+
+export function AutoResizingTextarea({ value, onChange, ...props }) {
+    const textareaRef = useRef(null);
+
+    useEffect(() => {
+        const textarea = textareaRef.current;
+        textarea.style.height = 'auto';
+        textarea.style.height = `${textarea.scrollHeight}px`;
+    }, [value]);
+
+    return (
+        <Form.Control
+            as="textarea"
+            ref={textareaRef}
+            value={value}
+            onChange={onChange}
+            {...props}
+            className="page-card-text text-courier auto-resizing-textarea"
+        />
+    );
 }
 
 export function PageListChoices({page, choice, setCurrentePageId, addNewChoiceToBDD}){
@@ -236,7 +284,6 @@ export function PageCardNavBarFooter({page, choices, updatePageToBDD, addNewChoi
 		addNewChoiceToBDD(choice);
 	}
 	return <div className="card-footer bg-white text-end">
-		<PageEditModal updatePageToBDD={updatePageToBDD} page={page} choices={choices}/>
 		<ChoiceEditModal addNewChoiceToBDD={addNewChoiceToBDD} page={page} isOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
 	</div>
 }

@@ -40,11 +40,7 @@ function ChoiceEditModal({page, addNewChoiceToBDD, choice, isOpen, setIsModalOpe
     }
       handleClose();
   };
-  /*
-  const [show, setShow] = useState(false); 
 
-  const handleClose = () => setShow(false); 
-  const handleShow = () => setShow(true);*/
 
   return <>
       <button

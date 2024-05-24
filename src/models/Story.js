@@ -2,9 +2,13 @@ import { ref, push, set, remove, update, get, child} from 'firebase/database';
 import { db } from '../configs/firebaseConfig';
 import {getAuth } from 'firebase/auth';
 
+import { API_URL } from '../configs/configBDD';
+import { getToken, setToken, removeToken, isTokenValid } from '../helpers/authHelpers';
+
 class Story {
   constructor(data) {
     this.id = data.id || null;
+    this.userId = data.userId || null
     this.createdAt = data.createdAt || null;
     this.updatedAt = data.updatedAt || null;
     this.totalCharacters = data.totalCharacters || 0;
@@ -15,21 +19,164 @@ class Story {
     this.title = data.title || '';
   }
 
+  static async getStoriesByUserId(userId) {
+    try {
+      const response = await fetch(`${API_URL}/stories/${userId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error getting stories: ${response.statusText}`);
+      }
+      
+      const data = await response.json();
+      if(!data.stories){
+        throw new Error(`Invalid Response Format Error: ${response.statusText}`);
+      }
+
+      return data.stories.map(story => new Story(story));
+
+    } catch (error) {
+      console.error('Error getting  stories:', error);
+      //throw error;
+    }
+  }
+  // Method to save a new story to the database
+  async save(userId) {
+    const storyData = {
+      userId: userId,
+      createdAt:this.createdAt.toISOString(), 
+      updatedAt: this.updatedAt.toISOString(), 
+      totalCharacters : this.totalCharacters,
+      totalEnd : this.totalEnd,
+      totalPages: this.totalPages,
+      totalEnd : this.totalEnd,
+      totalOpenNode :this.totalOpenNode,
+      summary: this.summary,
+      title: this.title,
+    };
+
+    try {
+      const response = await fetch(`${API_URL}stories/${userId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`
+        },
+        body: JSON.stringify(storyData),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error saving story up: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      if(!data.story){
+        throw new Error(`Invalid Response Format Error: ${response.statusText}`);
+      }
+
+      return data.story
+      
+    } catch (error) {
+        console.error('Error signing up:', error);
+      //throw error;
+    }
+  }
+
+  // Method to update a story in the database
+  async update() {
+    console.log("update", this.createdAt, typeof this.createdAt);
+    const storyData = {
+      updatedAt: this.updatedAt, 
+      totalCharacters : this.totalCharacters,
+      totalEnd : this.totalEnd,
+      totalPages: this.totalPages,
+      totalEnd : this.totalEnd,
+      totalOpenNode :this.totalOpenNode,
+      summary: this.summary,
+      title: this.title,
+    };
+    
+    if (!this.id) throw new Error('Cannot update story without an ID');
+    try {
+      const response = await fetch(`${API_URL}stories/${this.userId}/${this.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`
+        },
+        body: JSON.stringify(storyData),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error updapting up: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      if(!data.story){
+        throw new Error(`Invalid Response Format Error: ${response.statusText}`);
+      }
+
+      return data.story.id
+      
+    } catch (error) {
+        console.error('Error updating up:', error);
+      //throw error;
+    }
+  }
+
+  // Method to delete a story from the database
+  async delete() {
+    try {
+      const response = await fetch(`${API_URL}stories/${this.userId}/${this.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error deleting up: ${response.statusText}`);
+      }
+      const data = await response.json();
+
+      return data
+      
+    } catch (error) {
+        console.error('Error deleting up:', error);
+      //throw error;
+    }
+  }
+
   static async getTitleById(storyId) {
     try {
-      const auth = getAuth();
-      const storyRef = ref(db, `stories/${auth.currentUser.uid}/${storyId}`);
-      const snapshot = await get(storyRef);
+      const response = await fetch(`${API_URL}/stories/${userId}/${storyId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${userToken}`
+        },
+      });
       
-      if (snapshot.exists()) {
-        const storyData = snapshot.val();
-        return storyData.title;
-      } else {
-        return null; 
+      if (!response.ok) {
+        throw new Error(`Error getting stories: ${response.statusText}`);
       }
+      
+      const data = await response.json();
+      if(!data.stories){
+        throw new Error(`Invalid Response Format Error: ${response.statusText}`);
+      }
+
+      return storyData.title;
+
     } catch (error) {
-      console.error('Error:', error);
-      return null; 
+      console.error('Error getting  stories:', error);
+      //throw error;
     }
   }
 
@@ -78,46 +225,6 @@ class Story {
     });
   }
 
-  // Method to save a new story to the database
-  async save() {
-    const auth = getAuth();
-    const storyData = {
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
-      totalCharacters : this.totalCharacters,
-      totalEnd : this.totalEnd,
-      totalPages: this.totalPages,
-      totalEnd : this.totalEnd,
-      totalOpenNode :this.totalOpenNode,
-      summary: this.summary,
-      title: this.title,
-    };
-
-    if (this.id) {
-      await set(ref(db, `stories/${auth.currentUser.uid}/${this.id}`), storyData);
-      return this.id;
-    } else {
-      const newStoryRef = push(ref(db, `stories/${auth.currentUser.uid}`));
-      await set(newStoryRef, storyData);
-      return newStoryRef.key;
-    }
-  }
-
-  // Method to update a story in the database
-  async update() {
-    const auth = getAuth();
-    if (!this.id) throw new Error('Cannot update story without an ID');
-    const storyRef = ref(db, `stories/${auth.currentUser.uid}/${this.id}`);
-    await set(storyRef, this);
-  }
-
-  // Method to delete a story from the database
-  async delete() {
-    const auth = getAuth();
-    if (!this.id) throw new Error('Cannot delete story without an ID');
-    const storyRef = ref(db, `stories/${auth.currentUser.uid}/${this.id}`);
-    await remove(storyRef);
-  }
   
   // Method to delete all pages from a story
   async deleteAllPagesFromStory() {

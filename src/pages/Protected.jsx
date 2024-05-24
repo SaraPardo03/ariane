@@ -4,7 +4,6 @@ import { Context } from "../Context/AuthContext";
 
 export function Protected({children}){
     const {user} = useContext(Context);
-
     if(!user){
         return <Navigate to="/signup" replace/>
     }else{

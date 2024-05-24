@@ -1,8 +1,7 @@
 import { ref, set, onValue, push, serverTimestamp} from "firebase/database";
 import { db } from '../configs/firebaseConfig';
-import {getAuth } from 'firebase/auth';
-import { useRef, useEffect, useState} from "react";
-import { useParams } from "react-router-dom";
+import {useEffect, useState, useContext} from "react";
+import { Context as AuthContext } from '../Context/AuthContext';
 import Story from '../models/Story';
 import Stories from "../components/stories/Stories.jsx";
 import Page from '../models/Page';
@@ -10,33 +9,35 @@ import StoriesMainNav from "../components/stories/StoriesMainNav.jsx";
 import StoriesFooterMainNav from "../components/stories/StoriesFooterMainNav.jsx";
 
 export function StoriesPage() {
-  const bodyRef = useRef(document.body);
-  const auth = getAuth();
+  const {user} = useContext(AuthContext);
   const [stories, setStories] = useState([]);
-  const storiesRef = ref(db, `stories/${auth.currentUser.uid}`);
-  const [open, setOpen] = useState(false);
+  const storiesRef = ref(db, `stories/${user.id}`);
 
   //Get all the stories
   useEffect(() => {
-    onValue(storiesRef, (snapshot) => {
-      let data = [];
-      snapshot.forEach((childSnapshot)=>{
-        data.push({id: childSnapshot.key, ...childSnapshot.val()});
-      });
-      setStories(data);
-    }, {
-      //onlyOnce: true
-    });
+    const getStoriesByUserId= async () => {
+      try {
+        const storiesData = await Story.getStoriesByUserId(user.id);
+        setStories(storiesData);
+      } catch (error) {
+        console.error('Error geting stories data:', error);
+      }
+    };
+
+    getStoriesByUserId();
   }, []);
 
   const addNewStoryToBDD = async (story) => {
     const newStory = new Story(story);
-    newStory.createdAt = serverTimestamp();
-    newStory.updatedAt = serverTimestamp();
-
-   // Save the new story to the database
-    const storyId = await newStory.save();
+    newStory.createdAt = new Date();
+    newStory.updatedAt = new Date();
     
+   // Save the new story to the database
+   try{
+    const savedStory = await newStory.save(user.id);
+    setStories((prevStories) => [...prevStories, savedStory]);
+    //setStories[arrayStories];
+    /*
     // Add the first page to the story
     const firstPage = new Page({
       end: false,
@@ -45,23 +46,37 @@ export function StoriesPage() {
       text: "Que l'aventure commence!"
     });
 
-    await firstPage.save(storyId);
+    await firstPage.save(storyId);*/
 
-    return storyId; // Save the first page with the story ID*/
+     // Save the first page with the story ID*/
+    return savedStory;
+   }
+   catch(error){
+    console.error('Error saving story up:', error);
+   }
+    
   };
-
-  const updateStoryToBDD = (story) => {
+  const updateStoryToBDD = async (story) => {
     const updatedStory = new Story(story);
-    updatedStory.updatedAt = serverTimestamp();
-    updatedStory.save();
+    updatedStory.updatedAt = new Date();
+    try {
+      await updatedStory.update();
+      setStories((prevStories) =>
+        prevStories.map((s) => (s.id === story.id ? updatedStory : s))
+      );
+    } catch (error) {
+      console.error('Error updating story:', error);
+    }
   };
-
-  const deleteStoryToBDD = (story) => {
+  
+  const deleteStoryToBDD = async (story) => {
     const storyToDelete = new Story(story);
-    //Delete all the pages from the story
-    storyToDelete.deleteAllPagesFromStory();
-    //and delete the story
-    storyToDelete.delete();
+    try {
+      await storyToDelete.delete();
+      setStories((prevStories) => prevStories.filter((s) => s.id !== story.id));
+    } catch (error) {
+      console.error('Error deleting story:', error);
+    }
   };
   
   return<div className="bg-primary">
