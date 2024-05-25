@@ -89,7 +89,6 @@ class Story {
 
   // Method to update a story in the database
   async update() {
-    console.log("update", this.createdAt, typeof this.createdAt);
     const storyData = {
       updatedAt: this.updatedAt, 
       totalCharacters : this.totalCharacters,
@@ -153,13 +152,13 @@ class Story {
     }
   }
 
-  static async getTitleById(storyId) {
+  static async getTitleById(userId, storyId) {
     try {
       const response = await fetch(`${API_URL}/stories/${userId}/${storyId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${userToken}`
+          'Authorization': `Bearer ${getToken()}`
         },
       });
       
@@ -168,11 +167,11 @@ class Story {
       }
       
       const data = await response.json();
-      if(!data.stories){
+      if(!data.story){
         throw new Error(`Invalid Response Format Error: ${response.statusText}`);
       }
 
-      return storyData.title;
+      return data.title;
 
     } catch (error) {
       console.error('Error getting  stories:', error);
@@ -201,7 +200,8 @@ class Story {
   }
 
   static async updateStats(storyId) {
-    const auth = getAuth();
+    console.log("updateStats a implémenter!")
+    /*const auth = getAuth();
     const pages = await Story.getAllPagesFromStory(storyId);
 
     let totalCharacters = 0;
@@ -222,7 +222,7 @@ class Story {
       totalEnd: totalEnd,
       totalPages: totalPages,
       totalOpenNode: totalOpenNode
-    });
+    });*/
   }
 
   
