@@ -13,6 +13,7 @@ class Page {
     this.title = data.title || '';
     this.previousPageId = data.previousPageId || null;
     this.totalCharacters = data.totalCharacters || this.text.length || 0;
+    this.choiceTitle = data.choiceTitle || "";
   }
 
   // Static method to notify Story during operations on pages
@@ -74,13 +75,12 @@ class Page {
       first: this.first,
       text: this.text,
       title: this.title,
-      previousPageId: this.previousPageId || null,
       totalCharacters: this.text.length,
     };
     
     if (!this.id) throw new Error('Cannot update page without an ID');
     try {
-      const response = await fetch(`${API_URL}page/page/${this.id}`, {
+      const response = await fetch(`${API_URL}pages/page/${this.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -124,6 +124,7 @@ class Page {
       }
 
       await Page.notifyStory(storyId);
+      return data.deleted_count;
     } catch (error) {
       console.error('Error deleting page:', error);
       throw error;

@@ -1,36 +1,33 @@
-import { ref, set, onValue, push, serverTimestamp} from "firebase/database";
-import { db } from '../configs/firebaseConfig';
-import {getAuth } from 'firebase/auth';
-import { useEffect, useState, useMemo } from "react";
-import { useParams } from "react-router-dom";
 import Page from "../models/Page";
-import Story from "../models/Story";
 import Choice from "../models/Choice";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import Pages from "../components/pages/Pages.jsx";
 import PagesMainNav from "../components/pages/PagesMainNav.jsx";
 import PagesFooterMainNav from "../components/pages/PagesFooterMainNav.jsx";
 import StoryMap from "../components/StoryMap.jsx";
 
 export function PagesPage() {
-  const auth = getAuth();
   const params = useParams();
-  const pagesRef =ref(db, `pages/${auth.currentUser.uid}/${params.id}`);
   const [pages, setPages] = useState([]);
   const [currentePageId, setCurrentePageId] = useState(null);
   const [showMap, setShowMap] = useState(true);
+  const [shouldRender, setShouldRender] = useState(false); // État pour forcer le rendu
+
  
-  //Get all the pages of the story
+  //Get all the page from story
   useEffect(() => {
-    onValue(pagesRef, (snapshot) => {
-      let data = [];
-      snapshot.forEach((childSnapshot)=>{
-        data.push({id: childSnapshot.key, ...childSnapshot.val()});
-      });
-      setPages(data);
-    }, {
-      //onlyOnce: true
-    });
-  }, []);
+    const getPagesByStoryId= async () => {
+      try {
+        const pagesData = await Page.getPagesByStoryId(params.id);
+        setPages(pagesData);
+      } catch (error) {
+        console.error('Error geting stories data:', error);
+      }
+    };
+
+    getPagesByStoryId();
+  }, [shouldRender]);
 
   const addNewPageToBDD = async (page) => {
     const newPage = new Page(page);
@@ -46,26 +43,33 @@ export function PagesPage() {
   const updatePageToBDD = async (page) => {
     const pageToUpdate = new Page(page);
     await pageToUpdate.update(params.id, page.id);
+    setShouldRender(!shouldRender); 
   };
 
   const addNewChoiceToBDD = async (choice) => {
     // Add the page to link the choice
-    const newPage = {
+   const newPage = {
       first: false,
       previousPageId: choice.pageId
     };
     const newPageId = await addNewPageToBDD(newPage);
 
     // Add choice to current page with new page id as link
+    choice = new Choice(choice);
     choice.sendToPageId = newPageId;
-    const choicesRef = ref(db, `choices/${auth.currentUser.uid}/${choice.pageId}`);
-    push(choicesRef, new Choice(choice));
+    console.log("addNewChoiceToBDD", choice);
+    await choice.save(choice.pageId);
+
+    setShouldRender(!shouldRender);
   };
 
 
   const updateChoiceToBDD = async (choice) => {
+    console.log("updateChoiceToBdd PagesPage", choice);
     const choiceToUpdate = new Choice(choice);
-    await choiceToUpdate.update(choice.id);
+    await choice.update(choice.id);
+
+    setShouldRender(!shouldRender);
   };
 
   return <>
@@ -81,6 +85,7 @@ export function PagesPage() {
           addNewPageToBDD={addNewPageToBDD}
           updatePageToBDD={updatePageToBDD}
           addNewChoiceToBDD={addNewChoiceToBDD}
+          updateChoiceToBDD={updateChoiceToBDD}
           currentePageId={currentePageId}
           setCurrentePageId={setCurrentePageId} 
           setShowMap={setShowMap}

@@ -1,10 +1,6 @@
-import { ref, set, onValue, push, serverTimestamp} from "firebase/database";
-import { useState, useEffect, useRef, useMemo} from "react";
+import Choice from "../../models/Choice";
+import { useState, useEffect, useRef} from "react";
 import Form from 'react-bootstrap/Form';
-import { db } from '../../configs/firebaseConfig';
-import {getAuth } from 'firebase/auth';
-import Page from "../../models/Page";
-import PageEditModal from './PageEditModal';
 import ChoiceEditModal from './ChoiceEditModal';
 
 function Pages({storyId, pages, addNewPageToBDD, updatePageToBDD, addNewChoiceToBDD, updateChoiceToBDD, currentePageId, setCurrentePageId, setShowMap, showMap}) {
@@ -18,7 +14,7 @@ function Pages({storyId, pages, addNewPageToBDD, updatePageToBDD, addNewChoiceTo
 	
 	return <>
 		<PageMainNavBar setShowMap={setShowMap} showMap={showMap}/>
-		<div className="contrainer current-page-container bg-container p-0 p-sm-2 pt-2">
+		<div className={`contrainer current-page-container bg-container p-0 pt-2 ${!showMap ? 'p-sm-4	' : 'p-sm-2'}`}>	
 		{pages.length > 0 &&
 			<PageCard 
 			storyId={storyId}  
@@ -79,30 +75,28 @@ export function PageMainNavBar({setShowMap, showMap}){
 	</nav>
 }
 
-export function PageCard({storyId, page, addNewPageToBDD, updatePageToBDD, addNewChoiceToBDD, setCurrentePageId}){
-	const auth = getAuth();
+export function PageCard({storyId, page, addNewPageToBDD, updatePageToBDD, addNewChoiceToBDD, updateChoiceToBDD, setCurrentePageId}){
 	const [choices, setChoices] = useState([]);
-	const pageRef = ref(db, `pages/${auth.currentUser.uid}/${storyId}/${page.id}`);
-	const choicesRef = ref(db, `choices/${auth.currentUser.uid}/${page.id}`);
+	//Get all the page from story
+  useEffect(() => {
+    const getChoicesByPageId= async () => {
+      try {
+        const choicesData = await Choice.getChoicesByPageId (page.id);
+        setChoices(choicesData);
+      } catch (error) {
+        console.error('Error geting choices data:', error);
+      }
+    };
 
-	useEffect(() => {
-		onValue(choicesRef, (snapshot) => {
-			let data = [];
-			snapshot.forEach((childSnapshot)=>{
-			data.push({id: childSnapshot.key, ...childSnapshot.val()});
-			});
-			setChoices(data);
-		}, {
-			//onlyOnce: true
-		});
-	}, []);
-
+		getChoicesByPageId();
+		
+  }, []);
 
 	return <div className="card rounded-0 current-page-card-body">
 		<PageCardHeader page={page} setCurrentePageId={setCurrentePageId}/>
 		<div className="card-body current-page-card-body p-2 p-sm-4">
 			<PageTags/>
-			<p className="bg-gray-400 text-courier mt-2">Nom du chapitre en cours, nom de la scéne en cours - Le text du choix</p>
+			<p className="bg-gray-400 text-courier mt-2">Nom du chapitre en cours, nom de la scéne en cours - {page.choiceTitle}</p>
 			<PageText page={page } updatePageToBDD={updatePageToBDD}/>
 			<div className="card-body p-0">
 				<div className="bg-gray-400 text-courier mt-2 mt-sm-4 mb-2 mb-sm-4 d-flex justify-content-between">
@@ -110,7 +104,7 @@ export function PageCard({storyId, page, addNewPageToBDD, updatePageToBDD, addNe
 					<i className="bi bi-caret-down-fill text-courier me-1"></i>
 				</div>
 				{choices.length > 0 &&
-					choices.map((choice)=> <PageListChoices page={page} choice={choice} addNewChoiceToBDD={addNewChoiceToBDD} setCurrentePageId={setCurrentePageId} key={choice.id}/>)
+					choices.map((choice)=> <PageListChoices page={page} choice={choice} addNewChoiceToBDD={addNewChoiceToBDD} updateChoiceToBDD={updateChoiceToBDD} setCurrentePageId={setCurrentePageId} key={choice.id}/>)
 				}
 			</div>
 		</div>
@@ -160,15 +154,15 @@ export function PageText({page, updatePageToBDD}){
 	const textareaRef = useRef(null);
 
 	useEffect(() => {
-        const isModified = formPage.title !== previousPage.title ||
+    const isModified = formPage.title !== previousPage.title ||
 		formPage.text !== previousPage.text;
 
-        if (isModified) {
+		if (isModified) {
 			const updatedPage = { ...formPage};
-            updatePageToBDD(updatedPage);
-            setPreviousPage(updatedPage);
-        }
-    }, [formPage, previousPage, page]);
+			updatePageToBDD(updatedPage);
+			setPreviousPage(updatedPage);
+		}
+	}, [formPage, previousPage, page]);
 
 	const handleChange = (e) => {
 		const { name, value } = e.target;
@@ -212,7 +206,7 @@ export function AutoResizingTextarea({ value, onChange, ...props }) {
     );
 }
 
-export function PageListChoices({page, choice, setCurrentePageId, addNewChoiceToBDD}){
+export function PageListChoices({page, choice, setCurrentePageId, addNewChoiceToBDD, updateChoiceToBDD}){
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const handleClickGoToNexPage = (e)=>{
 		e.stopPropagation();
@@ -226,7 +220,7 @@ export function PageListChoices({page, choice, setCurrentePageId, addNewChoiceTo
 
 	return<div>
 		<ul className="p-0">
-			<ChoiceEditModal choice={choice} edit={true} page={page} isOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
+			<ChoiceEditModal choice={choice} addNewChoiceToBDD={addNewChoiceToBDD} updateChoiceToBDD={updateChoiceToBDD} edit={true} page={page} isOpen={isModalOpen} setIsModalOpen={setIsModalOpen}/>
 			<li className="list-group-item d-flex justify-content-between" onClick={handleClickEditChoice} >
 				<div>
 					<button 

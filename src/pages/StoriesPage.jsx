@@ -1,17 +1,14 @@
-import { ref, set, onValue, push, serverTimestamp} from "firebase/database";
-import { db } from '../configs/firebaseConfig';
-import {useEffect, useState, useContext} from "react";
-import { Context as AuthContext } from '../Context/AuthContext';
 import Story from '../models/Story';
-import Stories from "../components/stories/Stories.jsx";
 import Page from '../models/Page';
+import { Context as AuthContext } from '../Context/AuthContext';
+import {useEffect, useState, useContext} from "react";
+import Stories from "../components/stories/Stories.jsx";
 import StoriesMainNav from "../components/stories/StoriesMainNav.jsx";
 import StoriesFooterMainNav from "../components/stories/StoriesFooterMainNav.jsx";
 
 export function StoriesPage() {
   const {user} = useContext(AuthContext);
   const [stories, setStories] = useState([]);
-  const storiesRef = ref(db, `stories/${user.id}`);
 
   //Get all the stories
   useEffect(() => {
@@ -36,17 +33,16 @@ export function StoriesPage() {
    try{
     const savedStory = await newStory.save(user.id);
     setStories((prevStories) => [...prevStories, savedStory]);
-    //setStories[arrayStories];
-    /*
+    
     // Add the first page to the story
     const firstPage = new Page({
+      previousPageId: null,
       end: false,
       first: true,
       title: "Titre",
       text: "Que l'aventure commence!"
     });
-
-    await firstPage.save(storyId);*/
+    await firstPage.save(savedStory.id);
 
      // Save the first page with the story ID*/
     return savedStory;
@@ -60,7 +56,7 @@ export function StoriesPage() {
     const updatedStory = new Story(story);
     updatedStory.updatedAt = new Date();
     try {
-      await updatedStory.update();
+      await updatedStory.update();      
       setStories((prevStories) =>
         prevStories.map((s) => (s.id === story.id ? updatedStory : s))
       );
@@ -73,6 +69,7 @@ export function StoriesPage() {
     const storyToDelete = new Story(story);
     try {
       await storyToDelete.delete();
+      Page.deletePagesByStoryId(story.id);
       setStories((prevStories) => prevStories.filter((s) => s.id !== story.id));
     } catch (error) {
       console.error('Error deleting story:', error);

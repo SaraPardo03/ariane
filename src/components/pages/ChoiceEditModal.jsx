@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import Choice from "../../models/Choice";
 
-function ChoiceEditModal({page, addNewChoiceToBDD, choice, isOpen, setIsModalOpen, edit}) {
+function ChoiceEditModal({page, addNewChoiceToBDD, updateChoiceToBDD, choice, isOpen, setIsModalOpen, edit}) {
   const [formChoice, setFormChoice] = useState({ title: '', sendToPageId: '' });
   const handleClose = () => {
     setFormChoice({ title: '', sendToPageId: '' });
@@ -33,10 +33,14 @@ function ChoiceEditModal({page, addNewChoiceToBDD, choice, isOpen, setIsModalOpe
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newChoice = new Choice({ ...formChoice, pageId: page.id });
-    if(choice){
-      await newChoice.save(formChoice.id);
-    }else{
+    console.log("choice", choice);
+    if(!choice){
+      console.log("true", newChoice)
       addNewChoiceToBDD(newChoice);
+      //await newChoice.save(formChoice.id);
+    }else{
+      console.log("false", newChoice)
+      updateChoiceToBDD(newChoice);
     }
       handleClose();
   };

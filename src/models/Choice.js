@@ -1,50 +1,185 @@
-import { ref, push, set, remove } from 'firebase/database';
-import { db } from '../configs/firebaseConfig';
-import {getAuth } from 'firebase/auth';
+import { API_URL } from '../configs/configBDD';
+import { getToken } from '../helpers/authHelpers';
 
 class Choice {
   constructor(data) {
+    this.id = data.id || null;
     this.pageId = data.pageId || null;
     this.title = data.title || '';
     this.sendToPageId = data.sendToPageId || null;
   }
 
   // Method to save a new choice to the database
-  async save(choiceId) {
-    const auth = getAuth();
+  async save(pageId) {
     const choiceData = {
-        pageId: this.pageId,
-        title: this.title,
-        sendToPageId: this.sendToPageId
+      pageId: pageId,
+      title: this.title,
+      sendToPageId: this.sendToPageId,
     };
 
-    console.log("save", choiceData);
-    const choicesRef = ref(db, `choices/${auth.currentUser.uid}/${this.pageId}`);
-    if (choiceId) {
-        const choiceRef = ref(db, `choices/${auth.currentUser.uid}/${this.pageId}/${choiceId}`);
-        await set(choiceRef, choiceData);
-        return choiceId;
-    } else {
-        const newChoiceRef = push(choicesRef);
-        await set(newChoiceRef, choiceData);
-        return newChoiceRef.key;
+    try {
+      let response;
+
+      response = await fetch(`${API_URL}/choices/${pageId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`
+        },
+        body: JSON.stringify(choiceData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error saving choice: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      if (!data.choice) {
+        throw new Error(`Invalid Response Format: ${response.statusText}`);
+      }
+
+      this.id = data.choice.id;
+      return this.id;
+    } catch (error) {
+      console.error('Error saving choice:', error);
+      throw error;
     }
   }
 
   // Method to update a choice in the database
-  async update(choiceId) {
-    const auth = getAuth();
-    if (!choiceId) throw new Error('Cannot update choice without an ID');
-    const choiceRef = ref(db, `choices/${auth.currentUser.uid}/${this.pageId}/${choiceId}`);
-    await set(choiceRef, this);
+  async update() {
+    const choiceData = {
+      title: this.title,
+    };
+
+    if (!this.id) throw new Error('Cannot update choice without an ID');
+    try {
+      const response = await fetch(`${API_URL}/choices/choice/${this.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`
+        },
+        body: JSON.stringify(choiceData),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error updating choice: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      if (!data.choice) {
+        throw new Error(`Invalid Response Format: ${response.statusText}`);
+      }
+
+      return data.choice
+    } catch (error) {
+      console.error('Error updating choice:', error);
+      throw error;
+    }
   }
 
   // Method to delete a choice from the database
-  async delete(choiceId) {
-    const auth = getAuth();
-    if (!choiceId) throw new Error('Cannot delete choice without an ID');
-    const choiceRef = ref(db, `choices/${auth.currentUser.uid}/${this.pageId}/${choiceId}`);
-    await remove(choiceRef);
+  async delete() {
+    if (!this.id) throw new Error('Cannot delete choice without an ID');
+
+    try {
+      const response = await fetch(`${API_URL}/choices/choice/${this.id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error deleting choice: ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error('Error deleting choice:', error);
+      throw error;
+    }
+  }
+
+  // Static method to fetch choices by pageId
+  static async getChoicesByPageId(pageId) {
+    try {
+      const response = await fetch(`${API_URL}/choices/${pageId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error getting choices: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      if (!data.choices) {
+        throw new Error(`Invalid Response Format: ${response.statusText}`);
+      }
+
+      return data.choices.map(choice => new Choice(choice));
+    } catch (error) {
+      console.error('Error getting choices:', error);
+      throw error;
+    }
+  }
+
+  // Static method to fetch choices by sendToPageId
+  static async getChoiceBySendToPageId(sendToPageId) {
+    try {
+      const response = await fetch(`${API_URL}/choice_send_to/${sendToPageId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error getting choice: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      if (!data.choice) {
+        throw new Error(`Invalid Response Format: ${response.statusText}`);
+      }
+
+      return data.choice
+    } catch (error) {
+      console.error('Error getting choices:', error);
+      throw error;
+    }
+  }
+
+  // Static method to delete choices by pageId
+  static async deleteChoicesByPageId(pageId) {
+    try {
+      const response = await fetch(`${API_URL}/choices/${pageId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error deleting choices: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      if (!data.choices) {
+        throw new Error(`Invalid Response Format: ${response.statusText}`);
+      }
+
+      return data.deleted_count;
+    } catch (error) {
+      console.error('Error deleting choices:', error);
+      throw error;
+    }
   }
 }
 

@@ -1,8 +1,10 @@
-import React, { useState, useEffect} from 'react';
-import {useNavigation, useNavigate, NavLink, useParams} from 'react-router-dom'
 import Story from '../../models/Story';
+import { Context as AuthContext } from '../../Context/AuthContext';
+import React, { useState, useEffect, useContext} from 'react';
+import {useNavigation, useNavigate, NavLink, useParams} from 'react-router-dom'
 
 function PagesMainNav({storyId}) {
+	const {user} = useContext(AuthContext)
 	const [storyTitle, setStoryTitle] = useState("Mon super titre d'histoire");
 	const { state } = useNavigation();
 	const navigate = useNavigate();
@@ -10,7 +12,7 @@ function PagesMainNav({storyId}) {
 
 	useEffect(() => {
     const fetchStoryTitle = async () => {
-      const title = await Story.getTitleById(storyId);
+      const title = await Story.getTitleById(user.id, storyId);
       setStoryTitle(title);
     };
     fetchStoryTitle();

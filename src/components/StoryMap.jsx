@@ -1,5 +1,5 @@
-import { dia, shapes } from "@joint/core";
-import { useEffect, useRef, useState } from "react";
+import { useState, useEffect, useRef} from "react";
+import { dia, shapes, util} from "@joint/core";
 import interact from 'interactjs';
 
 
@@ -8,6 +8,8 @@ function StoryMap({pages, currentePageId, setCurrentePageId}) {
 	const storyMapContainer = useRef(null);
 	const canvas = useRef(null);
 	const paper = useRef(null);
+	const recHeight = 100;
+	const recWidth = 200;
 	const [zoomLevel, setZoomLevel] = useState(1);
   const [initialDistance, setInitialDistance] = useState(0);
 	const [directionXY, setDirectionXY] = useState([0, 0]);
@@ -96,9 +98,16 @@ function StoryMap({pages, currentePageId, setCurrentePageId}) {
 		*/
     const drawPage = (page, index, x, y)=>{
     	const nextPages = pages.filter(thispage => thispage.previousPageId === page.id);
-    	let color = 'white';
+
+			let label = page.title;
+			let color = 'white';
     	let currentPageColor = "black";
     	let currentPageWidth = 2
+
+			if (page.choiceTitle != ""){
+				label = page.choiceTitle;
+			}
+				
     	if(nextPages.length === 0){
     		color = "rgba(255, 193, 7, 0.5)";
     	}
@@ -109,23 +118,21 @@ function StoryMap({pages, currentePageId, setCurrentePageId}) {
     		currentPageColor = "rgba(0, 123, 255, 0.5)";
     		currentPageWidth = 5
     	}
-	    let rect = new shapes.standard.Rectangle();
-	    rect.position(x, y + 100);
-	    rect.resize(100, 40);
-	    rect.attr({
-	      body: {
+			let rec = new shapes.standard.HeaderedRectangle();
+	    rec.position(x, y + 100);
+	    rec.resize(recWidth, recHeight);
+			rec.attr('header/fill', 'lightgray');
+			rec.attr('headerText/text', util.breakText(label, { width:120, height:20 },{ 'font-size': 10 },{ellipsis: true}));
+			rec.attr('bodyText/text',util.breakText(page.text, { width:120, height:40 },{ 'font-size': 9 },{ellipsis: true}));
+	    rec.attr({
+	      body: {	
 	        fill: color,
 	        stroke:currentPageColor,
 	        strokeWidth: currentPageWidth
 	      },
-	      label: {
-	        text: page.title,
-	        fill: 'black',
-	        fontSize: 11
-	      }
 	    });
-	    rect.attr('id', page.id);
-	    rect.addTo(graph);
+	    rec.attr('id', page.id);
+	    rec.addTo(graph);
     };
 
 
@@ -198,16 +205,16 @@ function StoryMap({pages, currentePageId, setCurrentePageId}) {
    				currentPages.forEach((page, index) => {
    					let newX;
    					if (index < middleCurrentPageIndex) {
-				      newX = x - (middleCurrentPageIndex - index) * 180;
+				      newX = x - (middleCurrentPageIndex - index) * recWidth-20;
 				    } else if (index === middleCurrentPageIndex) {
 				      newX = x;
 				    } else {
-				      newX = x + (index - middleCurrentPageIndex) * 180;
+				      newX = x + (index - middleCurrentPageIndex) * recWidth-20;
 				    }
    					drawPage(page, index, newX, y);
    					drawLink(page, index);
    				});
-   				drawNextRow(currentPages, x, y + 160);
+   				drawNextRow(currentPages, x, (y + recHeight + 50));
    			}
    		}
    	};
@@ -215,31 +222,31 @@ function StoryMap({pages, currentePageId, setCurrentePageId}) {
    	const firstPages = pages.filter(page => page.first);
     //const firstPage = pages.find(page => page.first);
 	  if (firstPages.length > 0) {
-	    let firstPageElement = new shapes.standard.Rectangle();
-	    firstPageElement.position(paperInstance.options.width / 2 - 50, 10);
-	    firstPageElement.resize(100, 40);
-    	let currentPageColor = "black";
+			let currentPageColor = "black";
     	let currentPageWidth = 2
+
+			let firstPageElement = new shapes.standard.HeaderedRectangle();
+	    firstPageElement.position(paperInstance.options.width / 2 - 50, 10);
+	    firstPageElement.resize(recWidth, recHeight);
+			firstPageElement.attr('header/fill', 'lightgray');
+			firstPageElement.attr('headerText/text', util.breakText(firstPages[0].title, { width:120, height:20 },{ 'font-size': 10 },{ellipsis: true}));
+			firstPageElement.attr('bodyText/text',util.breakText(firstPages[0].text, { width:120, height:40 },{ 'font-size': 9 },{ellipsis: true}));
+    	
     	if(firstPages[0].id === currentePageId || currentePageId == null){
     		currentPageColor = "rgba(0, 123, 255, 0.5)";
     		currentPageWidth = 5
     	}
 	    firstPageElement.attr({
 	      body: {
-	        fill: "rgba(0, 123, 255, 0.5)",
+	        fill: "white",//"rgba(0, 123, 255, 0.5)",
 	        stroke:currentPageColor,
 	        strokeWidth: currentPageWidth
-	      },
-	      label: {
-	        text: firstPages[0].title,
-	        fill: 'black',
-	        fontSize: 11
 	      }
 	    });
 	    firstPageElement.attr('id', firstPages[0].id);
 	    firstPageElement.addTo(graph);
 
-	    drawNextRow(firstPages, paperInstance.options.width / 2 - 50, 10, 10);
+	    drawNextRow(firstPages, paperInstance.options.width / 2 - 50, 50, 10);
 
 	  }
     return () => {
