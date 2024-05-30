@@ -45,7 +45,7 @@ function StoryMap({pages, currentePageId, setCurrentePageId}) {
 		    return false // Only allow interaction with joint.dia.LinkView instances.
 		  },
       background: {
-          color: 'rgb(240, 241, 242)'
+          color: "rgb(240, 241, 242)"/*"rgb(108,117,125)"'rgb(64, 66, 73)'rgb(240, 241, 242)'*/
       },
     });
 
@@ -122,8 +122,8 @@ function StoryMap({pages, currentePageId, setCurrentePageId}) {
 	    rec.position(x, y + 100);
 	    rec.resize(recWidth, recHeight);
 			rec.attr('header/fill', 'lightgray');
-			rec.attr('headerText/text', util.breakText(label, { width:120, height:20 },{ 'font-size': 10 },{ellipsis: true}));
-			rec.attr('bodyText/text',util.breakText(page.text, { width:120, height:40 },{ 'font-size': 9 },{ellipsis: true}));
+			rec.attr('headerText/text', util.breakText(label, { width:95, height:16 },{ 'font-size': 8 },{ellipsis: true}));
+			rec.attr('bodyText/text',util.breakText(page.text, { width:80, height:30 },{ 'font-size': 6 },{ellipsis: true}));
 	    rec.attr({
 	      body: {	
 	        fill: color,
@@ -171,6 +171,21 @@ function StoryMap({pages, currentePageId, setCurrentePageId}) {
 			  //"rgba(248, 249, 250, 0.5)", // light
 			  "rgba(52, 58, 64, 0.5)" // dark
 			];
+			
+			/*
+			const colors = [
+				"rgba(255, 255, 0, 1)",   // pure yellow
+				"rgba(255, 200, 0, 1)",   // yellow with a bit of orange
+				"rgba(255, 180, 0, 1)",   // bright yellow
+				"rgba(255, 160, 0, 1)",   // light yellow
+				"rgba(255, 140, 0, 1)",   // amber
+				"rgba(255, 235, 59, 1)",  // yellow with a touch of green
+				"rgba(255, 238, 88, 1)",  // maize
+				"rgba(255, 255, 102, 1)", // light yellow with more green
+				"rgba(255, 250, 205, 1)", // light goldenrod yellow
+				"rgba(255, 228, 181, 1)"  // moccasin
+			];*/
+			
 	    let link = new shapes.standard.Link({
 			  source: { x: startX, y: startY },
 	  		target: { x: endX, y: endY },
@@ -205,16 +220,16 @@ function StoryMap({pages, currentePageId, setCurrentePageId}) {
    				currentPages.forEach((page, index) => {
    					let newX;
    					if (index < middleCurrentPageIndex) {
-				      newX = x - (middleCurrentPageIndex - index) * recWidth-20;
+				      newX = x - (middleCurrentPageIndex - index) * (recWidth+20);
 				    } else if (index === middleCurrentPageIndex) {
 				      newX = x;
 				    } else {
-				      newX = x + (index - middleCurrentPageIndex) * recWidth-20;
+				      newX = x + (index - middleCurrentPageIndex) * (recWidth+20);
 				    }
    					drawPage(page, index, newX, y);
    					drawLink(page, index);
    				});
-   				drawNextRow(currentPages, x, (y + recHeight + 50));
+   				drawNextRow(currentPages, x, (y + recHeight + 60));
    			}
    		}
    	};
@@ -229,7 +244,7 @@ function StoryMap({pages, currentePageId, setCurrentePageId}) {
 	    firstPageElement.position(paperInstance.options.width / 2 - 50, 10);
 	    firstPageElement.resize(recWidth, recHeight);
 			firstPageElement.attr('header/fill', 'lightgray');
-			firstPageElement.attr('headerText/text', util.breakText(firstPages[0].title, { width:120, height:20 },{ 'font-size': 10 },{ellipsis: true}));
+			firstPageElement.attr('headerText/text', util.breakText(firstPages[0].title, { width:50, height:20 },{ 'font-size': 10 },{ellipsis: true}));
 			firstPageElement.attr('bodyText/text',util.breakText(firstPages[0].text, { width:120, height:40 },{ 'font-size': 9 },{ellipsis: true}));
     	
     	if(firstPages[0].id === currentePageId || currentePageId == null){
@@ -246,7 +261,7 @@ function StoryMap({pages, currentePageId, setCurrentePageId}) {
 	    firstPageElement.attr('id', firstPages[0].id);
 	    firstPageElement.addTo(graph);
 
-	    drawNextRow(firstPages, paperInstance.options.width / 2 - 50, 50, 10);
+	    drawNextRow(firstPages, paperInstance.options.width / 2 - 50, 70, 10);
 
 	  }
     return () => {

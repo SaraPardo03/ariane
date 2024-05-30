@@ -36,7 +36,7 @@ function StoryEditModal({story, updateStoryToBDD}) {
 }
 
 function EditPageForm({story, updateStoryToBDD, handleClose}){
-  const [formStory, setFormStory] = useState(story);
+  const [formStory, setFormStory] = useState({ ...story, cover: null });
   const textareaRef = useRef(null);
 
   const handleChange = (e) => {
@@ -47,7 +47,28 @@ function EditPageForm({story, updateStoryToBDD, handleClose}){
     }));
   };
 
-  const handleSubmit = (e)=>{
+  const handleCoverChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const base64 = await convertToBase64(file);
+      setFormStory((prevData) => ({
+        ...prevData,
+        cover: base64
+      }));
+    }
+  };
+
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  };
+
+  const handleSubmit = (e) => {
+    console.log("cover", formStory.cover);
     e.preventDefault();
     updateStoryToBDD(formStory);
     handleClose();
@@ -66,6 +87,14 @@ function EditPageForm({story, updateStoryToBDD, handleClose}){
             onChange={handleChange}
           />
         </Form.Group>
+        <Form.Group className="mb-3">
+            <Form.Label>Image de la première de couverture</Form.Label>
+            <Form.Control
+              type="file"
+              name="cover"
+              onChange={handleCoverChange}
+            />
+          </Form.Group>
         <Form.Group className="mb-3 page-edit-modal"> 
           <Form.Label>Résumé de l'histoire</Form.Label>
           <Form.Control

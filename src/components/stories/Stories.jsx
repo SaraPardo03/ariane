@@ -1,11 +1,10 @@
+import { API_URL } from '../../configs/configBDD';
 import {useNavigate} from 'react-router-dom';
-import { useState, useEffect, useRef} from "react";
+import { useState, useEffect} from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import StoryEditModal from "./StoryEditModal.jsx";
 import DeleteConfirmationModal from "../DeleteConfirmationModal.jsx";
-import storyImg from '../../assets/img/story.jpg';
-import storyImg2 from '../../assets/img/story2.jpg';
 
 function Stories(props) {
 	return <div className="row p-md-2 p-sm-1">	
@@ -18,8 +17,6 @@ function Stories(props) {
 function StoryCard(props) {
 	const [formStory, setFormStory] = useState(props.story);
 	const [previousStory, setPreviousStory] = useState(props.story);
-	const textareaRef = useRef(null);
-	const imgs = [storyImg, storyImg2];
 	const navigate = useNavigate();
 	const [modalShow, setModalShow] = useState(false);
 
@@ -57,15 +54,14 @@ function StoryCard(props) {
 	const createDate = new Date(props.story.createdAt);
 	
   const imageIndex = props.story.totalCharacters % 2;
-
 	return <div className='col-lg-6 mb-2 p-2'>
 		<div className='card rounded-1'>
 			<div className='card-body p-2 m-0'>
 				<div className='row'>
-					<div className='col-md-4 col-sm-12 story-card-top text-center'>
-					<img src={imageIndex === 0 ? storyImg : storyImg2} className="img-fluid" alt="story" />
+					<div className={`${formStory.cover === null ? "d-none" : ""} col-md-4 col-sm-12 story-card-top text-center`}>
+						<img src={`${API_URL}${formStory.cover}`} className="img-fluid" alt="story" />
 					</div>
-					<div className='col-md-8 col-sm-12 position-relative'>
+					<div className={`${formStory.cover === null ? "col-md-12" : "col-md-8 col-sm-12"} position-relative`}>
 						<Form>
 							<Form.Control
 							className='fs-5 story-card-title border-0 p-0 m-0'
@@ -82,10 +78,9 @@ function StoryCard(props) {
 							onChange={handleChange} 
 							value={formStory.summary}
 							name="summary"
-							ref={textareaRef}
 							as="textarea"/>	
 						</Form>
-						<div className='d-none container p-0 text-end position-absolute bottom-0 end-0 p-0'>
+						<div className='container p-0 text-end position-absolute bottom-0 end-0 p-0'>
 							<StoryEditModal story={props.story} updateStoryToBDD={props.updateStoryToBDD}/>
 						</div>
 					</div>

@@ -11,6 +11,7 @@ class Story {
     this.userId = data.userId || null
     this.createdAt = data.createdAt || null;
     this.updatedAt = data.updatedAt || null;
+    this.cover = data.cover || null;
     this.totalCharacters = data.totalCharacters || 0;
     this.totalEnd = data.totalEnd || 0;
     this.totalPages = data.totalPages || 0;
@@ -58,6 +59,7 @@ class Story {
       totalOpenNode :this.totalOpenNode,
       summary: this.summary,
       title: this.title,
+      cover: this.cover,
     };
 
     try {
@@ -98,6 +100,7 @@ class Story {
       totalOpenNode :this.totalOpenNode,
       summary: this.summary,
       title: this.title,
+      cover: this.cover,
     };
     
     if (!this.id) throw new Error('Cannot update story without an ID');

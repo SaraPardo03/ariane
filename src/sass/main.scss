@@ -149,10 +149,13 @@ $pageListeHeight: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow)
     .bg-gray-900{
         background-color: $gray-900;
     }
-
-    // TEXT COLOR 
+    // TEXT COLOR
+    .text-secondary{
+        color: map-get($theme-colors, "secondary") !important;
+    }
+    // TEXT COLOR ON COLOR 
     .text-on-primary{
-        color: map-get($theme-colors, "textOnPrimary")
+        color: map-get($theme-colors, "textOnPrimary");
     }
     .text-on-primary-nav{
         color: map-get($theme-colors, "textOnPrimaryNav");
@@ -195,6 +198,15 @@ $pageListeHeight: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow)
     }
     .btn-gray-500:hover{
         background-color: $gray-700;
+    }
+
+    .btn-light{
+        border: none;
+        background-color: white;
+    }
+    .btn-light:hover{
+        border: none;
+        background-color: $gray-300;
     }
 
     // SWITCH
