@@ -47,6 +47,25 @@ function EditPageForm({page, choices, updatePageToBDD, handleClose}){
       [name]: value
     }));
   };
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const base64 = await convertToBase64(file);
+      setFormPage((prevData) => ({
+        ...prevData,
+        image: base64
+      }));
+    }
+  };
+
+  const convertToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+  };
 
   const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
@@ -76,6 +95,14 @@ function EditPageForm({page, choices, updatePageToBDD, handleClose}){
             value={formPage.title}
             name="title"
             onChange={handleChange}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Image de la page</Form.Label>
+          <Form.Control
+            type="file"
+            name="image"
+            onChange={handleImageChange}
           />
         </Form.Group>
         <Form.Group className="mb-3 page-edit-modal"> 

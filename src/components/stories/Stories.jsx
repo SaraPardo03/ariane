@@ -53,7 +53,6 @@ function StoryCard(props) {
 	const updateDate = new Date(props.story.updatedAt);
 	const createDate = new Date(props.story.createdAt);
 	
-  const imageIndex = props.story.totalCharacters % 2;
 	return <div className='col-lg-6 mb-2 p-2'>
 		<div className='card rounded-1'>
 			<div className='card-body p-2 m-0'>

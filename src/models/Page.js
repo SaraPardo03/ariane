@@ -14,6 +14,7 @@ class Page {
     this.previousPageId = data.previousPageId || null;
     this.totalCharacters = data.totalCharacters || this.text.length || 0;
     this.choiceTitle = data.choiceTitle || "";
+    this.image = data.image || "";
   }
 
   // Static method to notify Story during operations on pages
@@ -31,6 +32,7 @@ class Page {
       text: this.text,
       title: this.title,
       totalCharacters: this.text.length,
+      image:this.image,
     };
 
     if(this.previousPageId != null){
@@ -40,7 +42,7 @@ class Page {
     try {
       let response;
       
-      response = await fetch(`${API_URL}/pages/${storyId}`, {
+      response = await fetch(`${API_URL}pages/${storyId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -76,6 +78,7 @@ class Page {
       text: this.text,
       title: this.title,
       totalCharacters: this.text.length,
+      image:this.image
     };
     
     if (!this.id) throw new Error('Cannot update page without an ID');
@@ -111,7 +114,7 @@ class Page {
     if (!this.id) throw new Error('Cannot delete page without an ID');
 
     try {
-      const response = await fetch(`${API_URL}/pages/page/${this.id}`, {
+      const response = await fetch(`${API_URL}pages/page/${this.id}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -134,7 +137,7 @@ class Page {
   // Static method to fetch pages by storyId
   static async getPagesByStoryId(storyId) {
     try {
-      const response = await fetch(`${API_URL}/pages/${storyId}`, {
+      const response = await fetch(`${API_URL}pages/${storyId}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -161,7 +164,7 @@ class Page {
   // Static method to delete pages by storyId
   static async deletePagesByStoryId(storyId) {
     try {
-      const response = await fetch(`${API_URL}/pages/${storyId}`, {
+      const response = await fetch(`${API_URL}pages/${storyId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

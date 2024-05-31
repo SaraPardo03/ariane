@@ -1,6 +1,8 @@
+import { API_URL } from '../../configs/configBDD';
 import Choice from "../../models/Choice";
 import { useState, useEffect, useRef} from "react";
 import Form from 'react-bootstrap/Form';
+import PageEditModal from './PageEditModal';
 import ChoiceEditModal from './ChoiceEditModal';
 
 function Pages({storyId, pages, addNewPageToBDD, updatePageToBDD, addNewChoiceToBDD, updateChoiceToBDD, currentePageId, setCurrentePageId, setShowMap, showMap}) {
@@ -97,7 +99,7 @@ export function PageCard({storyId, page, addNewPageToBDD, updatePageToBDD, addNe
 		<div className="card-body current-page-card-body p-2 p-sm-4">
 			<PageTags/>
 			<p className="bg-gray-400 text-courier mt-2">Nom du chapitre en cours, nom de la scéne en cours - {page.choiceTitle}</p>
-			<PageText page={page } updatePageToBDD={updatePageToBDD}/>
+			<PageText page={page } choices={choices} updatePageToBDD={updatePageToBDD}/>
 			<div className="card-body p-0">
 				<div className="bg-gray-400 text-courier mt-2 mt-sm-4 mb-2 mb-sm-4 d-flex justify-content-between">
 					<span>Choix:</span>
@@ -148,10 +150,9 @@ export function PageTags(){
 	</div>
 }
 
-export function PageText({page, updatePageToBDD}){
+export function PageText({page, choices, updatePageToBDD}){
 	const [formPage, setFormPage] = useState(page);
 	const [previousPage, setPreviousPage] = useState(page);
-	const textareaRef = useRef(null);
 
 	useEffect(() => {
     const isModified = formPage.title !== previousPage.title ||
@@ -173,7 +174,11 @@ export function PageText({page, updatePageToBDD}){
 	};
 
 	return <div className="card-body m-0 p-0">
+		<PageEditModal page={page} choices={choices} updatePageToBDD={updatePageToBDD}/>
 		<h5 className="text-courier">{page.title}</h5>
+		<div className={`${page.image === "" ? "d-none" : ""} text-center`}>
+			<img src={`${API_URL}${page.image}`} className="img-fluid" alt="page image" />
+		</div>
 		<Form>
 			<AutoResizingTextarea
 				value={formPage.text}

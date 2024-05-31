@@ -1,4 +1,4 @@
-import { useState, useRef} from "react";
+import { useState, useRef, useEffect} from "react";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
@@ -18,7 +18,7 @@ function StoryEditModal({story, updateStoryToBDD}) {
   		<span>Editer</span>
   	</button>
     <Modal
-    contentClassName="page-edit-modal"
+    contentClassName="story-edit-modal"
     size="lg" 
     fullscreen="lg-down"
     show={show} 
@@ -74,6 +74,12 @@ function EditPageForm({story, updateStoryToBDD, handleClose}){
     handleClose();
   };
 
+  useEffect(() => {
+      const textarea = textareaRef.current;
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+  }, [formStory.summary]);
+
   return <>
     <Modal.Body className={"page-edit-modal-body bg-secondary bg-opacity-10"}>
       <Form className="page-edit-modal">
@@ -88,17 +94,17 @@ function EditPageForm({story, updateStoryToBDD, handleClose}){
           />
         </Form.Group>
         <Form.Group className="mb-3">
-            <Form.Label>Image de la première de couverture</Form.Label>
-            <Form.Control
-              type="file"
-              name="cover"
-              onChange={handleCoverChange}
-            />
-          </Form.Group>
+          <Form.Label>Image de la première de couverture</Form.Label>
+          <Form.Control
+            type="file"
+            name="cover"
+            onChange={handleCoverChange}
+          />
+        </Form.Group>
         <Form.Group className="mb-3 page-edit-modal"> 
           <Form.Label>Résumé de l'histoire</Form.Label>
           <Form.Control
-          className="page-edit-modal-form"
+          className="auto-resizing-textarea"
           onChange={handleChange} 
           value={formStory.summary}
           name="summary"

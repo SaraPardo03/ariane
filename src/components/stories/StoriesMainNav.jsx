@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Context as AuthContext } from '../../Context/AuthContext';
 import { useTheme } from '../../Context/ThemeContext';
 import '../../sass/main.scss'; 
+import StoryEditModal from "./StoryEditModal.jsx";
 
 
 function StoriesMainNav(props) {
@@ -56,7 +57,7 @@ function StoriesMainNav(props) {
 					<i className="text-on-primary-nav bi bi-feather me-2"></i>
 				</div>
 				<div>
-					<button 
+					<button 	
 					type="button" 
 					className="d-none d-md-inline btn btn-sm btn-primary"
 					onClick={handleClickNewStory}>
