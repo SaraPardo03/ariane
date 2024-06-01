@@ -202,6 +202,44 @@ class Story {
     }
   }
 
+  async printPdfStory() {
+    const options= {
+      cover: true, 
+      titleColor :[0,0,0],
+      adventurePage : true
+    };
+    
+    if (!this.id) throw new Error('Cannot update print story without an ID');
+    try {
+      const response = await fetch(`${API_URL}pages/generate_pdf/${this.id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`
+        },
+        body: JSON.stringify(options),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error printing up: ${response.statusText}`);
+      }
+
+      const blob = await response.blob(); // Get the response as a blob
+      const url = window.URL.createObjectURL(blob); // Create a URL for the blob
+      const a = document.createElement('a'); // Create an anchor element
+      a.href = url;
+      a.download = 'story.pdf'; // Set the file name for the download
+      document.body.appendChild(a); // Append the anchor to the body
+      a.click(); // Trigger a click to start the download
+      document.body.removeChild(a); // Remove the anchor from the DOM
+
+      
+    } catch (error) {
+        console.error('Error updating up:', error);
+      //throw error;
+    }
+  }
+
   static async updateStats(storyId) {
     console.log("updateStats a implémenter!")
     /*const auth = getAuth();

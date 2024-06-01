@@ -1,3 +1,4 @@
+import Story from '../../models/Story';
 import { API_URL } from '../../configs/configBDD';
 import {useNavigate} from 'react-router-dom';
 import { useState, useEffect} from "react";
@@ -56,6 +57,9 @@ function StoryCard(props) {
 	return <div className='col-lg-6 mb-2 p-2'>
 		<div className='card rounded-1'>
 			<div className='card-body p-2 m-0'>
+				<div className='row text-end'>
+					<StoryDropDownMenu story={props.story}/>
+				</div>
 				<div className='row'>
 					<div className={`${formStory.cover === null ? "d-none" : ""} col-md-4 col-sm-12 story-card-top text-center`}>
 						<img src={`${API_URL}${formStory.cover}`} className="img-fluid" alt="story" />
@@ -135,6 +139,28 @@ function StoryCardInfo(props){
 	</div>
 }
 
+function StoryDropDownMenu({story}){
+
+	const handleClickPrintPdfStory = e =>{
+		const storytoPrint = new Story(story);
+		console.log("story", storytoPrint);
+		storytoPrint.printPdfStory();
+	}
+	return <div className="dropdown">
+		<button 
+		onClick={handleClickPrintPdfStory}
+		className="btn btn-light border-0 rounded-circle" 
+		type="button">
+			<i className="bi bi-three-dots-vertical"></i>
+		</button>
+		<ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+			<li><a className="dropdown-item" href="#">Action</a></li>
+			<li><a className="dropdown-item" href="#">Another action</a></li>
+			<li><a className="dropdown-item" href="#">Something else here</a></li>
+		</ul>
+	</div>
+}
+
 function StoryAddCard({addNewStoryToBDD, nbStories}) {
 	const handleClickNewStory = e => {
 		const newStory = {
@@ -155,4 +181,5 @@ function StoryAddCard({addNewStoryToBDD, nbStories}) {
 	  </div>
 	</div>
 }
+
 export default Stories;
