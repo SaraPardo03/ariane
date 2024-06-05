@@ -16,7 +16,7 @@ function Pages({storyId, pages, addNewPageToBDD, updatePageToBDD, addNewChoiceTo
 	
 	return <>
 		<PageMainNavBar setShowMap={setShowMap} showMap={showMap}/>
-		<div className={`contrainer current-page-container bg-container p-0 pt-2 ${!showMap ? 'p-sm-4	' : 'p-sm-2'}`}>	
+		<div className={`contrainer current-page-container bg-container p-0 pt-2 ${!showMap ? 'p-sm-4' : 'p-sm-2'}`}>	
 		{pages.length > 0 &&
 			<PageCard 
 			storyId={storyId}  
@@ -94,7 +94,7 @@ export function PageCard({storyId, page, addNewPageToBDD, updatePageToBDD, addNe
 		
   }, []);
 
-	return <div className="card rounded-0 current-page-card-body">
+	return <div className="m-auto card rounded-0 current-page-card-body">
 		<PageCardHeader page={page} setCurrentePageId={setCurrentePageId}/>
 		<div className="card-body current-page-card-body p-2 p-sm-4">
 			<PageTags/>

@@ -347,6 +347,7 @@ $pageListeHeight: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow)
     }
     .current-page-card-body{
         max-height: calc(100dvh - ($mainNavHeight + $pageMainNav + 40px));
+        max-width: 1150px;
         overflow: auto;
 
         scrollbar-width: thin;
