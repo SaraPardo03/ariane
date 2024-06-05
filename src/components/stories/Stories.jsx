@@ -140,23 +140,51 @@ function StoryCardInfo(props){
 }
 
 function StoryDropDownMenu({story}){
+	const [dropdownOpen, setDropdownOpen] = useState(false);
+
+	// Add event listener to detect clicks outside the dropdown
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, [dropdownOpen]);
+	
+	// Toggle dropdown visibility
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
+	// Close dropdown when clicking outside
+  const handleClickOutside = event => {
+    if (dropdownOpen && !event.target.closest('.dropdown')) {
+      setDropdownOpen(false);
+    }
+  };
 
 	const handleClickPrintPdfStory = e =>{
-		const storytoPrint = new Story(story);
-		console.log("story", storytoPrint);
-		storytoPrint.printPdfStory();
+		e.preventDefault();
+		story.printPdfStory();
 	}
-	return <div className="dropdown">
+	const handleClickUploadStory = e =>{
+		e.preventDefault();
+		story.uploadStory();
+	}
+
+	return <div className={`dropdown`}>
 		<button 
-		onClick={handleClickPrintPdfStory}
-		className="btn btn-light border-0 rounded-circle" 
+		onClick={toggleDropdown}
+		className="btn btn-light border-0 rounded-circle position-relative" 
 		type="button">
 			<i className="bi bi-three-dots-vertical"></i>
 		</button>
-		<ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-			<li><a className="dropdown-item" href="#">Action</a></li>
-			<li><a className="dropdown-item" href="#">Another action</a></li>
-			<li><a className="dropdown-item" href="#">Something else here</a></li>
+		<ul
+			className={`story-card-dropdown-menu dropdown-menu position-absolute ${dropdownOpen ? 'show' : ''}`}
+			aria-labelledby="dropdownMenuButton1"
+		>	
+			<li><h4 className="dropdown-header border-bottom">Télécharger</h4></li>
+			<li><a className="dropdown-item" onClick={handleClickPrintPdfStory} href="#">PDF</a></li>
+			<li><a className="dropdown-item" onClick={handleClickUploadStory} href="#">Sauvegarde local</a></li>
 		</ul>
 	</div>
 }

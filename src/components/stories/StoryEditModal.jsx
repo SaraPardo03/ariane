@@ -114,7 +114,7 @@ function EditPageForm({story, updateStoryToBDD, handleClose}){
       </Form>
     </Modal.Body>
     <Modal.Footer className={"bg-secondary bg-opacity-10"} >
-      <Button className={"btn btn-sm"} variant="danger" onClick={handleClose}>
+      <Button className={"btn btn-sm"} variant="secondary" onClick={handleClose}>
         Annuler
       </Button>
        <Button 

@@ -77,7 +77,7 @@ export function StoriesPage() {
   };
   
   return<div className="bg-primary">
-    <StoriesMainNav stories={stories} addNewStoryToBDD={addNewStoryToBDD}/>
+    <StoriesMainNav user={user} stories={stories} addNewStoryToBDD={addNewStoryToBDD}/>
     <div className="container-fluid bg-container stories-container">
         <Stories stories={stories} updateStoryToBDD={updateStoryToBDD} addNewStoryToBDD={addNewStoryToBDD} deleteStoryToBDD={deleteStoryToBDD} />
     </div>

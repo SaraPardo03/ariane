@@ -240,6 +240,57 @@ class Story {
     }
   }
 
+  async uploadStory() {    
+    if (!this.id) throw new Error('Cannot exporte story without an ID');
+    try {
+      const response = await fetch(`${API_URL}stories/upload_story/${this.id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${getToken()}`
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to upload story');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `story_${this.id}.ariane`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+
+    } catch (error) {
+      console.error('Error uploading story:', error);
+    }
+  }
+
+  static async importStory(file) {    
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch(`${API_URL}stories/import_story`, {
+          method: 'POST',
+          headers: {
+              'Authorization': `Bearer ${getToken()}`
+          },
+          body: formData,
+      });
+      
+      if (!response.ok) {
+          throw new Error('Failed to upload story');
+      }
+    } catch (error) {
+        console.error('Error import story:', error);
+    }
+  }
+
   static async updateStats(storyId) {
     console.log("updateStats a implémenter!")
     /*const auth = getAuth();

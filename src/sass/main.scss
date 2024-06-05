@@ -330,6 +330,11 @@ $pageListeHeight: calc(100dvh - calc($mainNavHeight + $pagesListFollowingToShow)
         box-shadow: none;
     }
 
+    .story-card-dropdown-menu{
+        top:35px;
+        right:0px;
+    }
+
     /* ##############################################################
                         PAGES COMPOMENTS 
     ##################################################################*/
